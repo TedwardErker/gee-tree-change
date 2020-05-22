@@ -13,8 +13,10 @@ var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
 var naip18c = naip.filterDate('2018-01-01', '2018-12-31');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 
+var grass = ee.Feature(grass).set('class_2017', 0);
 
-
+var pts = pts.merge(grass);
+print(pts);
 
 
 var naip17 = naip17c.median().byte()
