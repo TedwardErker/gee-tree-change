@@ -2,7 +2,9 @@
 var grass = /* color: #ffc82d */ee.Geometry.MultiPoint(
         [[-90.32665744138231, 45.00996221422387],
          [-90.32710805249681, 45.00985222997199],
-         [-90.3272689850377, 45.009089919524705]]);
+         [-90.3272689850377, 45.009089919524705],
+         [-90.31870200944414, 45.0090368228967],
+         [-90.31915262055864, 45.01018976717799]]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
