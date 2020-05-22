@@ -16,7 +16,11 @@ var grass = /* color: #fffe58 */ee.Feature(
                [-90.34356809641008, 45.00598949468479]]],
              [[[-90.32018720716876, 45.01320870311262],
                [-90.31882464498919, 45.01331488858444],
-               [-90.32005846113604, 45.01337177357763]]]]),
+               [-90.32005846113604, 45.01337177357763]]],
+             [[[-90.33939678811325, 45.008636496199856],
+               [-90.33912320280368, 45.008499961112804],
+               [-90.33809859980784, 45.008553058205045],
+               [-90.33764262423057, 45.008685800534934]]]]),
         {
           "class_2017": 0,
           "system:index": "0"
@@ -46,7 +50,7 @@ var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 
 
-var pts2 = pts.merge(grass);
+var pts2 = pts.merge(grass).merge(tree);
 print(pts2);
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
