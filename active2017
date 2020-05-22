@@ -1134,14 +1134,14 @@ var training = image.sampleRegions({
 });
 //print(training.size());
 
-var withRandom = training.randomColumn('random');
-print(withRandom);
-var split = 0.001;  
-var trainingSub = withRandom.filter(ee.Filter.lt('random', split));
-print(trainingSub.size());
+// var withRandom = training.randomColumn('random');
+// print(withRandom);
+// var split = 0.001;  
+// var trainingSub = withRandom.filter(ee.Filter.lt('random', split));
+// print(trainingSub.size());
 
 var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
-  features: trainingSub,
+  features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
 });
@@ -1153,7 +1153,7 @@ var classified = image.classify(trainedClassifier);
 
 Map.addLayer(naip17);
 Map.addLayer(naip18);
-Map.addLayer(ent, {min: 3, max: 4});
+// Map.addLayer(ent, {min: 3, max: 4});
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
 
