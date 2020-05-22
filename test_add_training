@@ -13,27 +13,29 @@ var geometry =
           [-90.32642293515804, 45.01016311085367]]], null, false);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
+var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
+
+var p1 = 
+
+
 print(pts);
 
-var p1 = ee.Feature(ee.Geometry.Point([-90.32674480023982, 45.01011760031385])).set('class_2017', '0');
-
-var r1 = ee.Feature(ee.Geometry.Polygon(
+var region = ee.Geometry.Polygon(
         [[[-90.32811809125545, 45.01016311085367],
           [-90.32811809125545, 45.00848298945642],
           [-90.32642293515804, 45.00848298945642],
           [-90.32642293515804, 45.01016311085367]]], null, false);
 
+var setGrass = function(f) {return f.set('class_2017', 0)};
+var r1 = ee.FeatureCollection.randomPoints(region, 20).map(setGrass);
+print(r1);
 
 
-
-var pts = pts.merge(p1);
-print(pts);
+var pts2 = pts.merge(r1);
+print(pts2);
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
-var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
-
-
 var naip17 = naip17c.median().byte()
 
 
@@ -43,10 +45,11 @@ var image = ee.Image.cat([naip17]); //gradient, direction]);
 var classProperty = 'class_2017';
 
 var training = image.sampleRegions({
-  collection: pts,
+  collection: pts2,
   properties: [classProperty],
-  scale: 0.1
+  scale: 1
 });
+// print(training);
 
 var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
   features: training,
@@ -54,12 +57,11 @@ var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
   inputProperties: image.bandNames()
 });
 
-print(trainedClassifier);
+// print(trainedClassifier);
 
 
 var classified = image.classify(trainedClassifier);
-
-Map.addLayer(naip17);
+// Map.addLayer(naip17);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
 
