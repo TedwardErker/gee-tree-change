@@ -1,0 +1,21 @@
+var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
+var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
+
+var p1 = 
+
+
+print(pts);
+
+var region = ee.Geometry.Polygon(
+        [[[-90.32811809125545, 45.01016311085367],
+          [-90.32811809125545, 45.00848298945642],
+          [-90.32642293515804, 45.00848298945642],
+          [-90.32642293515804, 45.01016311085367]]], null, false);
+
+var setGrass = function(f) {return f.set('class_2017', 0)};
+var r1 = ee.FeatureCollection.randomPoints(region, 20).map(setGrass);
+print(r1);
+
+
+var pts2 = pts.merge(r1);
+print(pts2);
