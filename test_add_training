@@ -407,13 +407,33 @@ var grass = /* color: #fffe58 */ee.Feature(
         {
           "class_2017": 2,
           "system:index": "0"
+        }),
+    impervious = /* color: #ff3e0c */ee.Feature(
+        ee.Geometry.Polygon(
+            [[[-90.3279035719412, 45.00598217769598],
+              [-90.3279035719412, 45.00585891090359],
+              [-90.32651955208952, 45.00589683917567],
+              [-90.32652223429854, 45.006029587930136]]]),
+        {
+          "class_2017": 1,
+          "system:index": "0"
+        }),
+    water = /* color: #1d65f7 */ee.Feature(
+        ee.Geometry.Polygon(
+            [[[-90.32922050902823, 45.00155861411567],
+              [-90.32943612168056, 45.001135447621074],
+              [-90.3285080773614, 45.00141613938183],
+              [-90.32849198410732, 45.001529932947136]]]),
+        {
+          "class_2017": 4,
+          "system:index": "0"
         });
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 
 
-var pts2 = pts.merge(grass).merge(tree).merge(soil);
+var pts2 = pts.merge(grass).merge(tree).merge(soil).merge(impervious);
 print(pts2);
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
