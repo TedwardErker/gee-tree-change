@@ -6,7 +6,7 @@ var grass = /* color: #ffc82d */ee.Geometry.MultiPoint(
          [-90.31870200944414, 45.0090368228967],
          [-90.31915262055864, 45.01018976717799]]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
+var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_10k');
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
@@ -16,11 +16,10 @@ var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 var grass = ee.Feature(grass).set('class_2017', 0);
 
 var pts = pts.merge(grass);
-print(pts);
 
 
-var naip17 = naip17c.median().byte()
-var naip18 = naip18c.median().byte()
+var naip17 = naip17c.median().byte();
+var naip18 = naip18c.median().byte();
 
 
 
@@ -48,7 +47,7 @@ var training = image.sampleRegions({
   scale: 0.1
 });
 
-var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
