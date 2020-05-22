@@ -1,37 +1,16 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var geometry = 
-    /* color: #0b4a8b */
-    /* displayProperties: [
-      {
-        "type": "rectangle"
-      }
-    ] */
-    ee.Geometry.Polygon(
-        [[[-90.32811809125545, 45.01016311085367],
-          [-90.32811809125545, 45.00848298945642],
-          [-90.32642293515804, 45.00848298945642],
-          [-90.32642293515804, 45.01016311085367]]], null, false);
+var grass = /* color: #ffc82d */ee.Geometry.MultiPoint(
+        [[-90.32665744138231, 45.00996221422387],
+         [-90.32710805249681, 45.00985222997199],
+         [-90.3272689850377, 45.009089919524705]]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 
-var p1 = 
+var grass = ee.Feature(grass).set('class_2017', 0);
 
 
-print(pts);
-
-var region = ee.Geometry.Polygon(
-        [[[-90.32811809125545, 45.01016311085367],
-          [-90.32811809125545, 45.00848298945642],
-          [-90.32642293515804, 45.00848298945642],
-          [-90.32642293515804, 45.01016311085367]]], null, false);
-
-var setGrass = function(f) {return f.set('class_2017', 0)};
-var r1 = ee.FeatureCollection.randomPoints(region, 20).map(setGrass);
-print(r1);
-
-
-var pts2 = pts.merge(r1);
+var pts2 = pts.merge(grass);
 print(pts2);
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
