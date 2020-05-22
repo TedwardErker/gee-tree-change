@@ -226,6 +226,56 @@ var grass = /* color: #fffe58 */ee.Feature(
               ],
               "geodesic": true,
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.34570815444266,
+                    45.00186641051737
+                  ],
+                  [
+                    -90.34375550627982,
+                    45.001983996273516
+                  ],
+                  [
+                    -90.34376623511588,
+                    45.00207123716243
+                  ],
+                  [
+                    -90.34568669677054,
+                    45.00194606541079
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.34255387664115,
+                    45.00130503003265
+                  ],
+                  [
+                    -90.34233393550193,
+                    45.00130123690255
+                  ],
+                  [
+                    -90.3423822152642,
+                    45.001832272672
+                  ],
+                  [
+                    -90.34254851222312,
+                    45.00182847957681
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -433,7 +483,7 @@ var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 
 
-var pts2 = pts.merge(grass).merge(tree).merge(soil).merge(impervious);
+var pts2 = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 print(pts2);
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
