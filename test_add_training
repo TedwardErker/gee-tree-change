@@ -276,6 +276,31 @@ var grass = /* color: #fffe58 */ee.Feature(
               ],
               "geodesic": true,
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.32048577345267,
+                    44.99403255719136
+                  ],
+                  [
+                    -90.31851166761771,
+                    44.99405152524531
+                  ],
+                  [
+                    -90.31850093878165,
+                    44.99416533343707
+                  ],
+                  [
+                    -90.32047504461661,
+                    44.99415395262807
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -491,7 +516,7 @@ var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
 var naip17 = naip17c.median().byte()
 Map.addLayer(naip17);
 
-var image = ee.Image.cat([naip17]); //gradient, direction]); 
+var image = ee.Image.cat([naip17]); 
 
 
 var classProperty = 'class_2017';
