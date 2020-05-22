@@ -1518,5 +1518,15 @@ Map.addLayer(naip18);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
 
+// I should add an accuracy assessment part that takes in a different subsample of the points
+// IO need to upload water layer
+
+
+Export.image.toDrive({
+  image: classified,
+  description: 'active2017-2',
+  scale: 1,
+//  region: 
+});
 
 
