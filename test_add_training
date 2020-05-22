@@ -802,8 +802,8 @@ var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 
 
-var pts2 = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
-print(pts2);
+var pts2 = pts.merge(grass)  //.merge(tree).merge(soil).merge(impervious).merge(water);
+print(pts2.size());
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
@@ -816,14 +816,22 @@ var image = ee.Image.cat([naip17]);
 var classProperty = 'class_2017';
 
 var training = image.sampleRegions({
-  collection: pts2,
+  collection: pts,
   properties: [classProperty],
   scale: 1
 });
-// print(training);
+print(training);
+
+
+var withRandom = training.randomColumn('random');
+print(withRandom);
+var split = 0.1;  
+var trainingSub = withRandom.filter(ee.Filter.lt('random', split));
+print(trainingSub);
+
 
 var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
-  features: training,
+  features: trainingSub,
   classProperty: classProperty,
   inputProperties: image.bandNames()
 });
