@@ -251,6 +251,27 @@ var geometry = /* color: #1d65f7 */ee.Feature(
                 ]
               ],
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.3627688266468,
+                    45.007516287123586
+                  ],
+                  [
+                    -90.36277955548286,
+                    45.00747456720242
+                  ],
+                  [
+                    -90.3613472558689,
+                    45.00752766527863
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -1093,7 +1114,7 @@ var grass = /* color: #fffe58 */geometry2,
     impervious = /* color: #ff3e0c */geometry4,
     water = /* color: #1d65f7 */geometry;
 
-var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_10k');
+var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
@@ -1130,15 +1151,10 @@ var classProperty = 'class_2017';
 var training = image.sampleRegions({
   collection: pts,
   properties: [classProperty],
-  scale: 0.1
+  scale: 1
 });
-//print(training.size());
+print(training.size());
 
-// var withRandom = training.randomColumn('random');
-// print(withRandom);
-// var split = 0.001;  
-// var trainingSub = withRandom.filter(ee.Filter.lt('random', split));
-// print(trainingSub.size());
 
 var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
   features: training,
