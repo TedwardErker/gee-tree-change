@@ -1,0 +1,56 @@
+var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
+
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
+var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
+var naip18c = naip.filterDate('2018-01-01', '2018-12-31');
+var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
+
+
+var naip17 = naip17c.median().byte()
+var naip18 = naip18c.median().byte()
+
+
+
+var ndvi = naip17.normalizedDifference(['N', 'R']);
+var gauss = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
+var smoothGauss = naip17.convolve(gauss);
+var win = ee.Kernel.square({radius: 10});
+var entro = naip17.select('N').entropy(win);
+
+var ent = entro.expression(
+    "(b('N') > 4) ? 4" +
+      ": (b('N') < 3) ? 3" +
+        ": b('N')" 
+);
+
+
+var image = ee.Image.cat([naip17, naip18, ndvi, ent]);
+
+
+var classProperty = 'class_2017';
+
+var training = image.sampleRegions({
+  collection: pts,
+  properties: [classProperty],
+  scale: 0.1
+});
+
+var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
+  features: training,
+  classProperty: classProperty,
+  inputProperties: image.bandNames()
+});
+
+print(trainedClassifier);
+
+
+var classified = image.classify(trainedClassifier);
+
+Map.addLayer(naip17);
+Map.addLayer(naip18);
+Map.addLayer(ent, {min: 3, max: 4});
+Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+
+
+
+
