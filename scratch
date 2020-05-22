@@ -66,3 +66,31 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 
 
+
+
+
+
+
+
+/// random subset
+
+
+// var withRandom = training.randomColumn('random');
+// print(withRandom);
+// var split = 0.001;  
+// var trainingSub = withRandom.filter(ee.Filter.lt('random', split));
+// print(trainingSub.size());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
