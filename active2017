@@ -815,8 +815,6 @@ var grass = ee.Feature(grass).set('class_2017', 0);
 
 var pts = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
-var pts = ee.FeatureCollection.randomPoints({region: pts, points: 3});
-print(pts.size())
 var naip17 = naip17c.median().byte();
 var naip18 = naip18c.median().byte();
 
@@ -845,9 +843,16 @@ var training = image.sampleRegions({
   properties: [classProperty],
   scale: 0.1
 });
+print(training.size());
+
+var withRandom = training.randomColumn('random');
+print(withRandom);
+var split = 0.1;  
+var trainingSub = withRandom.filter(ee.Filter.lt('random', split));
+print(trainingSub.size());
 
 var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
-  features: training,
+  features: trainingSub,
   classProperty: classProperty,
   inputProperties: image.bandNames()
 });
