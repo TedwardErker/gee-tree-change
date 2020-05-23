@@ -2372,9 +2372,11 @@ var naip18 = naip18c.median().byte();
 
 var ndvi = naip17.normalizedDifference(['N', 'R']);
 var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
-var naipGauss53 = naip17.convolve(gauss53);
+var naip17Gauss53 = naip17.convolve(gauss53);
+var naip18Gauss53 = naip18.convolve(gauss53);
 var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
-var naipGauss104 = naip17.convolve(gauss104);
+var naip17Gauss104 = naip17.convolve(gauss104);
+var naip18Gauss104 = naip18.convolve(gauss104);
 var win10 = ee.Kernel.square({radius: 10});
 var entro10 = naip17.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
@@ -2385,6 +2387,7 @@ var nir17glcm7 = naip17.select(['N']).glcmTexture({size: 7, average: false});
 var contrast7 = nir17glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
 var image = ee.Image.cat([naip17, naip18, ndvi, naipGauss53, naipGauss104, entro10, entro5, contrast3, contrast7]);
+var image = ee.Image.cat([ndvi, naip17Gauss53, naip17Gauss104, naip18Gauss53, naip18Gauss104, entro10, entro5, contrast3, contrast7]);
 
 
 var classProperty = 'class_2017';
@@ -2426,7 +2429,7 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 Export.image.toDrive({
   image: classified,
-  description: 'elderon',
+  description: 'elderon-Gauss',
   scale: 1,
   region: elderon
 });
