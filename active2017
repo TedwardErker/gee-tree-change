@@ -1464,7 +1464,6 @@ var grass = /* color: #fffe58 */geometry2,
 
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_10k');
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2017', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2017');
-Map.addLayer(testpts);
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(testpts);  // testpts has greater extent than pts
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
@@ -1483,10 +1482,8 @@ var naip18 = naip18c.median().byte();
 var ndvi = naip17.normalizedDifference(['N', 'R']);
 var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
 var naipGauss53 = naip17.convolve(gauss53);
-Map.addLayer(naipGauss53);
 var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
 var naipGauss104 = naip17.convolve(gauss104);
-Map.addLayer(naipGauss104);
 var win10 = ee.Kernel.square({radius: 10});
 var entro10 = naip17.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
@@ -1523,16 +1520,15 @@ print('Validation error matrix: ', testAccuracy);
 print('Validation overall accuracy: ', testAccuracy.accuracy());
 
 
-
-// var classified = image.classify(trainedClassifier);
+var classified = image.classify(trainedClassifier);
 
 
 
 
 // Map.centerObject(pts, 24);
-// Map.addLayer(naip17);
-// Map.addLayer(naip18);
-// Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+Map.addLayer(naip17);
+//Map.addLayer(naip18);
+Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
 
 // // Export.image.toDrive({
