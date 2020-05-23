@@ -1,3 +1,9 @@
+var cross = ee.Kernel.cross({radius: 10, units: 'pixels', normalize: true});
+
+
+
+
+
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 
