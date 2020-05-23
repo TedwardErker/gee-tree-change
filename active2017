@@ -1497,7 +1497,7 @@ var entro10 = naip17.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
 var entro5 = naip17.select('N').entropy(win5);
 
-// glcm?  directoinal?
+var naip17glcm = naip17.  directoinal?
 
 
 var image = ee.Image.cat([naip17, naip18, ndvi, naipGauss53, naipGauss104, entro10, entro5]);
