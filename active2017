@@ -1487,50 +1487,45 @@ var naipGauss104 = naip17.convolve(gauss104);
 Map.addLayer(naipGauss104);
 var win10 = ee.Kernel.square({radius: 10});
 var entro10 = naip17.select('N').entropy(win10);
-var ent10 = entro10.expression(
-    "(b('N') > 4) ? 4" +
-      ": (b('N') < 3) ? 3" +
-        ": b('N')" 
-);
+// var ent10 = entro10.expression(
+//     "(b('N') > 4) ? 4" +
+//       ": (b('N') < 3) ? 3" +
+//         ": b('N')" 
+// );
 var win5 = ee.Kernel.square({radius: 5});
 var entro5 = naip17.select('N').entropy(win5);
-var ent5 = entro5.expression(
-    "(b('N') > 4) ? 4" +
-      ": (b('N') < 3) ? 3" +
-        ": b('N')" 
-);
-Map.addLayer(ent10);
-Map.addLayer(ent5);
+
+// glcm?  directoinal?
 
 
-// var image = ee.Image.cat([naip17, naip18, ndvi, smoothGauss, ent]);
+var image = ee.Image.cat([naip17, naip18, ndvi, naipGauss53, naipGauss104, entro10, entro5]);
 
 
-// var classProperty = 'class_2017';
+var classProperty = 'class_2017';
 
-// var training = image.sampleRegions({
-//   collection: pts,
-//   properties: [classProperty],
-//   scale: 1
-// });
-// print(training.size());
-
-
-// var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
-//   features: training,
-//   classProperty: classProperty,
-//   inputProperties: image.bandNames()
-// });
-
-// print(trainedClassifier);
+var training = image.sampleRegions({
+  collection: pts,
+  properties: [classProperty],
+  scale: 1
+});
+print(training.size());
 
 
-// var classified = image.classify(trainedClassifier);
+var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
+  features: training,
+  classProperty: classProperty,
+  inputProperties: image.bandNames()
+});
 
-// Map.addLayer(naip17);
-// Map.addLayer(naip18);
-// // Map.addLayer(ent, {min: 3, max: 4});
-// Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+print(trainedClassifier);
+
+
+var classified = image.classify(trainedClassifier);
+
+Map.centerObject(pts, 24);
+Map.addLayer(naip17);
+Map.addLayer(naip18);
+Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
 
 // // I should add an accuracy assessment part that takes in a different subsample of the points
