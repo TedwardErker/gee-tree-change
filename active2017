@@ -1462,7 +1462,7 @@ var grass = /* color: #fffe58 */geometry2,
     impervious = /* color: #ff3e0c */geometry4,
     water = /* color: #1d65f7 */geometry;
 
-var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_1k');
+var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_10k');
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2017', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2017');
 Map.addLayer(testpts);
 
@@ -1491,12 +1491,11 @@ var win10 = ee.Kernel.square({radius: 10});
 var entro10 = naip17.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
 var entro5 = naip17.select('N').entropy(win5);
-
 var nir17glcm = naip17.select(['N']).glcmTexture({size: 5, average: false});
 var contrast = nir17glcm.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
 
-var image = ee.Image.cat([naip17, naip18, ndvi, naipGauss53, naipGauss104, entro10, entro5, nir17glcm]);
+var image = ee.Image.cat([naip17, naip18, ndvi, naipGauss53, naipGauss104, entro10, entro5, contrast]);
 
 
 var classProperty = 'class_2017';
@@ -1516,11 +1515,6 @@ var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
 });
 
 // print(trainedClassifier);
-
-var trainAccuracy = trainedClassifier.confusionMatrix();
-print('Resubstitution error matrix: ', trainAccuracy);
-print('Training overall accuracy: ', trainAccuracy.accuracy());
-
 
 var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 var testClassified = testing.classify(trainedClassifier);
