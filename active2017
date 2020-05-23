@@ -1453,7 +1453,19 @@ var geometry = /* color: #1d65f7 */ee.Feature(
           "system:index": "0"
         }),
     wb = ee.Image("users/erker/mar_water_bodies_2"),
-    imageVisParam = {"opacity":1,"bands":["R","G","B"],"min":62.746165077883106,"max":179.7892639724612,"gamma":1};
+    imageVisParam = {"opacity":1,"bands":["R","G","B"],"min":62.746165077883106,"max":179.7892639724612,"gamma":1},
+    elderon = 
+    /* color: #061008 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[-89.25960069392202, 44.785156720262805],
+          [-89.25960069392202, 44.78172994670228],
+          [-89.24710159991263, 44.78172994670228],
+          [-89.24710159991263, 44.785156720262805]]], null, false);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // I need to upload water layer
 var grass = /* color: #fffe58 */geometry2,
@@ -1529,6 +1541,14 @@ var classified = image.classify(trainedClassifier);
 Map.addLayer(naip17);
 //Map.addLayer(naip18);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+
+Export.image.toDrive({
+  image: classified,
+  description: 'elderon',
+  scale: 1,
+  region: elderon
+});
+
 
 
 // // Export.image.toDrive({
