@@ -2001,6 +2001,43 @@ var geometry = /* color: #1d65f7 */ee.Feature(
               ],
               "geodesic": true,
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.61803029961908,
+                    44.922064270296964
+                  ],
+                  [
+                    -89.61797799654329,
+                    44.922043379244315
+                  ],
+                  [
+                    -89.61787473149622,
+                    44.92206711907632
+                  ],
+                  [
+                    -89.61788680143678,
+                    44.92211839707991
+                  ],
+                  [
+                    -89.61788411922777,
+                    44.922176322177094
+                  ],
+                  [
+                    -89.61794983334863,
+                    44.92216967503775
+                  ],
+                  [
+                    -89.61795653887117,
+                    44.92207851419216
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -2317,7 +2354,7 @@ var training = image.sampleRegions({
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
@@ -2341,6 +2378,8 @@ var classified = image.classify(trainedClassifier);
 Map.addLayer(naip17);
 //Map.addLayer(naip18);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+
+
 
 Export.image.toDrive({
   image: classified,
