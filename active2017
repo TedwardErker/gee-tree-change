@@ -2337,11 +2337,12 @@ var win10 = ee.Kernel.square({radius: 10});
 var entro10 = naip17.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
 var entro5 = naip17.select('N').entropy(win5);
-var nir17glcm = naip17.select(['N']).glcmTexture({size: 5, average: false});
-var contrast = nir17glcm.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var nir17glcm3 = naip17.select(['N']).glcmTexture({size: 3, average: false});
+var contrast3 = nir17glcm3.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var nir17glcm7 = naip17.select(['N']).glcmTexture({size: 7, average: false});
+var contrast7 = nir17glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-
-var image = ee.Image.cat([naip17, naip18, ndvi, naipGauss53, naipGauss104, entro10, entro5, contrast]);
+var image = ee.Image.cat([naip17, naip18, ndvi, naipGauss53, naipGauss104, entro10, entro5, contrast3, contrast7]);
 
 
 var classProperty = 'class_2017';
