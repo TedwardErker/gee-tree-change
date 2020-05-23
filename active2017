@@ -1529,7 +1529,7 @@ print('Training overall accuracy: ', trainAccuracy.accuracy());
 var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 print(testing);
 var testClassified = testing.classify(trainedClassifier);
-// print(testClassified.first());
+print(testClassified.first());
 var testAccuracy = testClassified.errorMatrix('class_2017', 'classification');
 print('Validation error matrix: ', testAccuracy);
 print('Validation overall accuracy: ', testAccuracy.accuracy());
