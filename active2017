@@ -1452,11 +1452,10 @@ var geometry = /* color: #1d65f7 */ee.Feature(
           "class_2017": 2,
           "system:index": "0"
         }),
-    wb = ee.Image("users/erker/mar_water_bodies_2");
+    wb = ee.Image("users/erker/mar_water_bodies_2"),
+    imageVisParam = {"opacity":1,"bands":["R","G","B"],"min":62.746165077883106,"max":179.7892639724612,"gamma":1};
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // I need to upload water layer
-
-Map.addLayer(wb);
 var grass = /* color: #fffe58 */geometry2,
     tree = /* color: #2ca919 */geometry3,
     soil = /* color: #d6b257 */geometry5,
@@ -1481,56 +1480,58 @@ var naip18 = naip18c.median().byte();
 
 var ndvi = naip17.normalizedDifference(['N', 'R']);
 var gauss = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
-var smoothGauss = naip17.convolve(gauss);
-var win = ee.Kernel.square({radius: 10});
-var entro = naip17.select('N').entropy(win);
-
-var ent = entro.expression(
-    "(b('N') > 4) ? 4" +
-      ": (b('N') < 3) ? 3" +
-        ": b('N')" 
-);
-
-
-var image = ee.Image.cat([naip17, naip18, ndvi, smoothGauss, ent]);
-
-
-var classProperty = 'class_2017';
-
-var training = image.sampleRegions({
-  collection: pts,
-  properties: [classProperty],
-  scale: 1
-});
-print(training.size());
+var naipGauss = naip17.convolve(gauss);
+Map.addLayer(naipGauss);
+var naipCross = naip17.convolve(cross);
+Map.addLayer(naipCross);
+// var win = ee.Kernel.square({radius: 10});
+// var entro = naip17.select('N').entropy(win);
+// var ent = entro.expression(
+//     "(b('N') > 4) ? 4" +
+//       ": (b('N') < 3) ? 3" +
+//         ": b('N')" 
+// );
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
-  features: training,
-  classProperty: classProperty,
-  inputProperties: image.bandNames()
-});
-
-print(trainedClassifier);
+// var image = ee.Image.cat([naip17, naip18, ndvi, smoothGauss, ent]);
 
 
-var classified = image.classify(trainedClassifier);
+// var classProperty = 'class_2017';
 
-Map.addLayer(naip17);
-Map.addLayer(naip18);
-// Map.addLayer(ent, {min: 3, max: 4});
-Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+// var training = image.sampleRegions({
+//   collection: pts,
+//   properties: [classProperty],
+//   scale: 1
+// });
+// print(training.size());
 
 
-// I should add an accuracy assessment part that takes in a different subsample of the points
+// var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
+//   features: training,
+//   classProperty: classProperty,
+//   inputProperties: image.bandNames()
+// });
+
+// print(trainedClassifier);
 
 
-Export.image.toDrive({
-  image: classified,
-  description: 'active2017-4',
-  scale: 1,
-  maxPixels: 12000000000
-             //  region: 
-});
+// var classified = image.classify(trainedClassifier);
+
+// Map.addLayer(naip17);
+// Map.addLayer(naip18);
+// // Map.addLayer(ent, {min: 3, max: 4});
+// Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+
+
+// // I should add an accuracy assessment part that takes in a different subsample of the points
+
+
+// Export.image.toDrive({
+//   image: classified,
+//   description: 'active2017-4',
+//   scale: 1,
+//   maxPixels: 12000000000
+//             //  region: 
+// });
 
 
