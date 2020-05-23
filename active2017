@@ -1479,18 +1479,28 @@ var naip18 = naip18c.median().byte();
 
 
 var ndvi = naip17.normalizedDifference(['N', 'R']);
-var gauss = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
-var naipGauss = naip17.convolve(gauss);
-Map.addLayer(naipGauss);
-var naipCross = naip17.convolve(cross);
-Map.addLayer(naipCross);
-// var win = ee.Kernel.square({radius: 10});
-// var entro = naip17.select('N').entropy(win);
-// var ent = entro.expression(
-//     "(b('N') > 4) ? 4" +
-//       ": (b('N') < 3) ? 3" +
-//         ": b('N')" 
-// );
+var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
+var naipGauss53 = naip17.convolve(gauss53);
+Map.addLayer(naipGauss53);
+var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
+var naipGauss104 = naip17.convolve(gauss104);
+Map.addLayer(naipGauss104);
+var win10 = ee.Kernel.square({radius: 10});
+var entro10 = naip17.select('N').entropy(win10);
+var ent10 = entro10.expression(
+    "(b('N') > 4) ? 4" +
+      ": (b('N') < 3) ? 3" +
+        ": b('N')" 
+);
+var win5 = ee.Kernel.square({radius: 5});
+var entro5 = naip17.select('N').entropy(win5);
+var ent5 = entro5.expression(
+    "(b('N') > 4) ? 4" +
+      ": (b('N') < 3) ? 3" +
+        ": b('N')" 
+);
+Map.addLayer(ent10);
+Map.addLayer(ent5);
 
 
 // var image = ee.Image.cat([naip17, naip18, ndvi, smoothGauss, ent]);
