@@ -2355,6 +2355,7 @@ var grass = /* color: #fffe58 */geometry2,
 
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_10k');
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2017', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2017');
+var testpts2 = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_1k_2').filter(ee.Filter.neq('class_2017', '')).remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(testpts);  // testpts has greater extent than pts
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
@@ -2412,6 +2413,12 @@ var testClassified = testing.classify(trainedClassifier);
 var testAccuracy = testClassified.errorMatrix('class_2017', 'classification');
 print('Validation error matrix: ', testAccuracy);
 print('Validation overall accuracy: ', testAccuracy.accuracy());
+
+var testing2 = image.sampleRegions({collection: testpts2, properties: [classProperty], scale: 1});
+var test2Classified = testing2.classify(trainedClassifier);
+var test2Accuracy = test2Classified.errorMatrix('class_2017', 'classification');
+print('Validation error matrix: ', test2Accuracy);
+print('Validation overall accuracy: ', test2Accuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
