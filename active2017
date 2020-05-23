@@ -1451,8 +1451,12 @@ var geometry = /* color: #1d65f7 */ee.Feature(
         {
           "class_2017": 2,
           "system:index": "0"
-        });
+        }),
+    wb = ee.Image("users/erker/mar_water_bodies_2");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
+// I need to upload water layer
+
+Map.addLayer(wb);
 var grass = /* color: #fffe58 */geometry2,
     tree = /* color: #2ca919 */geometry3,
     soil = /* color: #d6b257 */geometry5,
@@ -1519,7 +1523,6 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 
 // I should add an accuracy assessment part that takes in a different subsample of the points
-// I need to upload water layer
 
 
 Export.image.toDrive({
