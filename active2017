@@ -1462,9 +1462,11 @@ var grass = /* color: #fffe58 */geometry2,
     impervious = /* color: #ff3e0c */geometry4,
     water = /* color: #1d65f7 */geometry;
 
-var pts = ee.FeatureCollection('users/erker/UTC/marathon_combined_sub_1k');
+var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_1k');
+var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2017', ''));
+Map.addLayer(testpts);
 
-var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(pts);
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(testpts);  // testpts has greater extent than pts
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
 var naip18c = naip.filterDate('2018-01-01', '2018-12-31');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
@@ -1519,24 +1521,57 @@ var trainedClassifier = ee.Classifier.smileRandomForest(50).train({
 
 print(trainedClassifier);
 
-
-var classified = image.classify(trainedClassifier);
-
-Map.centerObject(pts, 24);
-Map.addLayer(naip17);
-Map.addLayer(naip18);
-Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+var trainAccuracy = trainedClassifier.confusionMatrix();
+print('Resubstitution error matrix: ', trainAccuracy);
+print('Training overall accuracy: ', trainAccuracy.accuracy());
 
 
-// // I should add an accuracy assessment part that takes in a different subsample of the points
+var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+print(testing);
+var testClassified = testing.classify(trainedClassifier);
+// print(testClassified.first());
+var testAccuracy = testClassified.errorMatrix('class_2017', 'classification');
+print('Validation error matrix: ', testAccuracy);
+print('Validation overall accuracy: ', testAccuracy.accuracy());
 
 
-// Export.image.toDrive({
-//   image: classified,
-//   description: 'active2017-4',
-//   scale: 1,
-//   maxPixels: 12000000000
-//             //  region: 
-// });
+
+// var classified = image.classify(trainedClassifier);
+
+
+
+
+// // Sample the input with a different random seed to get validation data.
+// // var validation = input.addBands(modis).sample({
+// //   numPixels: 5000,
+// //   seed: 1
+// //   // Filter the result to get rid of any null pixels.
+// // }).filter(ee.Filter.neq('B1', null));
+
+// // // Classify the validation data.
+// // var validated = validation.classify(classifier);
+
+// // // Get a confusion matrix representing expected accuracy.
+// // var testAccuracy = validated.errorMatrix('Land_Cover_Type_1', 'classification');
+// // print('Validation error matrix: ', testAccuracy);
+// // print('Validation overall accuracy: ', testAccuracy.accuracy());
+
+
+
+
+
+// Map.centerObject(pts, 24);
+// Map.addLayer(naip17);
+// Map.addLayer(naip18);
+// Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+
+
+// // Export.image.toDrive({
+// //   image: classified,
+// //   description: 'active2017-4',
+// //   scale: 1,
+// //   maxPixels: 12000000000
+// //             //  region: 
+// // });
 
 
