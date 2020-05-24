@@ -2529,7 +2529,8 @@ var geometry = /* color: #1d65f7 */ee.Feature(
           [-90.1433479069162, 44.659440429756614],
           [-90.1433479069162, 44.65963884559203]]], null, false),
     image = ee.Image("users/erker/mar_water_bodies_2"),
-    image2 = ee.Image("users/erker/26023_norm_height");
+    image2 = ee.Image("users/erker/26023_norm_height"),
+    image3 = ee.Image("users/erker/26024_norm_height");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // I need to upload water layer
 var grass = /* color: #fffe58 */geometry2,
