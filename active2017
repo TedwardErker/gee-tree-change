@@ -2144,6 +2144,110 @@ var geometry = /* color: #1d65f7 */ee.Feature(
               ],
               "geodesic": true,
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.1766129073657,
+                    44.66586378276667
+                  ],
+                  [
+                    -90.176669233755,
+                    44.66577412378348
+                  ],
+                  [
+                    -90.17656999202146,
+                    44.665756955026175
+                  ],
+                  [
+                    -90.17651903005017,
+                    44.66582372238706
+                  ],
+                  [
+                    -90.17660754294766,
+                    44.66585042930986
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.17442690701856,
+                    44.66552040718595
+                  ],
+                  [
+                    -90.17423512907399,
+                    44.66550609982594
+                  ],
+                  [
+                    -90.17421635361089,
+                    44.66552136100982
+                  ],
+                  [
+                    -90.174417519287,
+                    44.665544252778105
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.17414259286298,
+                    44.66549751540825
+                  ],
+                  [
+                    -90.17392801614179,
+                    44.66542693237009
+                  ],
+                  [
+                    -90.17391728730573,
+                    44.665449824175674
+                  ],
+                  [
+                    -90.17405542107,
+                    44.665500376880956
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.17380999894513,
+                    44.66523330548635
+                  ],
+                  [
+                    -90.17352836699857,
+                    44.665227582514426
+                  ],
+                  [
+                    -90.17353239031209,
+                    44.665244751428475
+                  ],
+                  [
+                    -90.17381134004964,
+                    44.66525238205533
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -2323,6 +2427,73 @@ var geometry = /* color: #1d65f7 */ee.Feature(
               ],
               "geodesic": true,
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.20986658468877,
+                    44.67998804584006
+                  ],
+                  [
+                    -90.20989608898793,
+                    44.679581816865266
+                  ],
+                  [
+                    -90.20983171597157,
+                    44.67978016376278
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.20784688130055,
+                    44.67985835802616
+                  ],
+                  [
+                    -90.20797830954228,
+                    44.67962949646993
+                  ],
+                  [
+                    -90.2078549279276,
+                    44.67972485556155
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -90.2167817022237,
+                    44.6821870971113
+                  ],
+                  [
+                    -90.21682059425441,
+                    44.6821489551145
+                  ],
+                  [
+                    -90.21679243105976,
+                    44.682142280262475
+                  ],
+                  [
+                    -90.21675756234256,
+                    44.682171840315604
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -2344,7 +2515,21 @@ var geometry = /* color: #1d65f7 */ee.Feature(
         [[[-89.25706868861197, 44.78521002402276],
           [-89.25706868861197, 44.78178325362632],
           [-89.24456959460257, 44.78178325362632],
-          [-89.24456959460257, 44.78521002402276]]], null, false);
+          [-89.24456959460257, 44.78521002402276]]], null, false),
+    geometry6 = 
+    /* color: #00ffff */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[-90.1566194771219, 44.65963884559203],
+          [-90.1566194771219, 44.659440429756614],
+          [-90.1433479069162, 44.659440429756614],
+          [-90.1433479069162, 44.65963884559203]]], null, false),
+    image = ee.Image("users/erker/mar_water_bodies_2"),
+    image2 = ee.Image("users/erker/26023_norm_height");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // I need to upload water layer
 var grass = /* color: #fffe58 */geometry2,
@@ -2362,7 +2547,6 @@ var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
 var naip18c = naip.filterDate('2018-01-01', '2018-12-31');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
 
-var grass = ee.Feature(grass).set('class_2017', 0);
 
 var pts = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
@@ -2414,11 +2598,12 @@ var testAccuracy = testClassified.errorMatrix('class_2017', 'classification');
 print('Validation error matrix: ', testAccuracy);
 print('Validation overall accuracy: ', testAccuracy.accuracy());
 
-var testing2 = image.sampleRegions({collection: testpts2, properties: [classProperty], scale: 1});
-var test2Classified = testing2.classify(trainedClassifier);
-var test2Accuracy = test2Classified.errorMatrix('class_2017', 'classification');
-print('Validation error matrix: ', test2Accuracy);
-print('Validation overall accuracy: ', test2Accuracy.accuracy());
+// this has very high accuracy because the points come from close to the points that are in the training dataset
+// var testing2 = image.sampleRegions({collection: testpts2, properties: [classProperty], scale: 1});
+// var test2Classified = testing2.classify(trainedClassifier);
+// var test2Accuracy = test2Classified.errorMatrix('class_2017', 'classification');
+// print('Validation error matrix: ', test2Accuracy);
+// print('Validation overall accuracy: ', test2Accuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
@@ -2435,9 +2620,9 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 Export.image.toDrive({
   image: classified,
-  description: 'elderon',
+  description: 'geo6',
   scale: 1,
-  region: elderon
+  region: geometry6
 });
 
 
