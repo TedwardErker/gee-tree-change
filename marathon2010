@@ -5628,8 +5628,11 @@ var nir10glcm3 = naip10.select(['N']).glcmTexture({size: 3, average: false});
 var contrast3 = nir10glcm3.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 var nir10glcm7 = naip10.select(['N']).glcmTexture({size: 7, average: false});
 var contrast7 = nir10glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
+var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7]);
+// var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7]);
+var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7, contrast14]);
 
 
 var classProperty = 'class_2010';
