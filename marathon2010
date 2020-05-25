@@ -5591,7 +5591,8 @@ var grass = /* color: #ebea4c */ee.Feature(
         {
           "class_2010": 4,
           "system:index": "0"
-        });
+        }),
+    water_lines = ee.Image("users/erker/UTC/marathon_water/water_lines");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 
 var trainingData = ee.FeatureCollection([grass, tree, soil, impervious, water]);
