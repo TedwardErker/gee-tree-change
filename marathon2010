@@ -3054,6 +3054,31 @@ var grass = /* color: #ebea4c */ee.Feature(
               ],
               "geodesic": true,
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.66152519539006,
+                    44.93254877452756
+                  ],
+                  [
+                    -89.66139913156636,
+                    44.93248801162686
+                  ],
+                  [
+                    -89.66125697448857,
+                    44.93256016756429
+                  ],
+                  [
+                    -89.66139644935734,
+                    44.9325145954038
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -3548,6 +3573,31 @@ var grass = /* color: #ebea4c */ee.Feature(
                   [
                     -89.68329050331592,
                     44.95847735055004
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.58982596371906,
+                    44.937212488031996
+                  ],
+                  [
+                    -89.58954701398152,
+                    44.93626693489804
+                  ],
+                  [
+                    -89.58859751199024,
+                    44.937352990582625
+                  ],
+                  [
+                    -89.58951482747334,
+                    44.936369465508555
                   ]
                 ]
               ],
@@ -5207,6 +5257,35 @@ var grass = /* color: #ebea4c */ee.Feature(
               ],
               "geodesic": true,
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.659534996301,
+                    44.93263232341104
+                  ],
+                  [
+                    -89.65948671653874,
+                    44.9326608059572
+                  ],
+                  [
+                    -89.65968520000584,
+                    44.93269308615908
+                  ],
+                  [
+                    -89.65967983558781,
+                    44.93264941294044
+                  ],
+                  [
+                    -89.65959132269032,
+                    44.93263042457415
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -5426,6 +5505,85 @@ var grass = /* color: #ebea4c */ee.Feature(
               ],
               "geodesic": true,
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.65402637739072,
+                    44.93670772417896
+                  ],
+                  [
+                    -89.65667639989744,
+                    44.93522671741948
+                  ],
+                  [
+                    -89.65469156522641,
+                    44.93607735161181
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.65684806127439,
+                    44.9348317758327
+                  ],
+                  [
+                    -89.65676223058591,
+                    44.93327476811599
+                  ],
+                  [
+                    -89.6528891207684,
+                    44.934057074830804
+                  ],
+                  [
+                    -89.65666567106138,
+                    44.93338869694133
+                  ],
+                  [
+                    -89.6547237517346,
+                    44.93444442663812
+                  ],
+                  [
+                    -89.65662275571714,
+                    44.93354060169016
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.65645645875821,
+                    44.93273550194273
+                  ],
+                  [
+                    -89.6560219408978,
+                    44.932750692608465
+                  ],
+                  [
+                    -89.65698753614316,
+                    44.93285702715614
+                  ],
+                  [
+                    -89.65618823785672,
+                    44.93261017879704
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -5455,7 +5613,7 @@ var naip10 = naip10c.median().byte();
 
 
 
-var ndvi = naip10.normalizedDifference(['N', 'R']);
+var ndvi10 = naip10.normalizedDifference(['N', 'R']);
 var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
 var naip10Gauss53 = naip10.convolve(gauss53);
 var naip08Gauss53 = naip08.convolve(gauss53);
@@ -5471,7 +5629,7 @@ var contrast3 = nir10glcm3.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var nir10glcm7 = naip10.select(['N']).glcmTexture({size: 7, average: false});
 var contrast7 = nir10glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip05, naip08, naip10, ndvi, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7]);
+var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7]);
 
 
 var classProperty = 'class_2010';
@@ -5513,7 +5671,7 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 Export.image.toDrive({
   image: classified,
-  description: 'marathon-2010-2',
+  description: 'marathon-2010-5',
   scale: 1,
 });
 
