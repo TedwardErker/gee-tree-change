@@ -199,8 +199,9 @@ var grass = /* color: #ebea4c */ee.Feature(
         });
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 
+var trainingData = ee.FeatureColection([grass, tree, soil, impervious, water]);
 
-var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_1k');
+
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2010', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2017');
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(testpts);  // testpts has greater extent than pts
