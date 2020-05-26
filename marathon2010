@@ -5601,7 +5601,6 @@ Map.addLayer(wl);
 
 var trainingData = ee.FeatureCollection([grass, tree, soil, impervious, water]);
 
-
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2010', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2010');
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(testpts);  // testpts has greater extent than pts
