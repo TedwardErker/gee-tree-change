@@ -2466,15 +2466,21 @@ var image = ee.Image.cat([naip17, naip18, ndvi, naip17Gauss53, naip17Gauss104, n
 
 var classProperty = 'class_2017';
 
-var training = image.sampleRegions({
+var trainingFull = image.sampleRegions({
   collection: pts,
   properties: [classProperty],
   scale: 1
 });
+print(trainingFull.size());
+
+trainingFull = trainingFull.randomColumn();
+var training = trainingFull.filter(ee.Filter.lt('random', 0.9));
+var testing = trainingFull.filter(ee.Filter.gte('random', 0.9));
 print(training.size());
+print(testing.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
@@ -2482,11 +2488,18 @@ var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
 
 // print(trainedClassifier);
 
-var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
-var testClassified = testing.classify(trainedClassifier);
-var testAccuracy = testClassified.errorMatrix('class_2017', 'classification');
-print('Validation error matrix: ', testAccuracy);
-print('Validation overall accuracy: ', testAccuracy.accuracy());
+
+var testingClassified = testing.classify(trainedClassifier);
+var testAccuracy = testingClassified.errorMatrix('class_2017', 'classification');
+print('Testing error matrix: ', testAccuracy);
+print('Testing overall accuracy: ', testAccuracy.accuracy());
+
+
+var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+var validationClassified = validation.classify(trainedClassifier);
+var validationAccuracy = validationClassified.errorMatrix('class_2017', 'classification');
+print('Validation error matrix: ', validationAccuracy);
+print('Validation overall accuracy: ', validationAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
