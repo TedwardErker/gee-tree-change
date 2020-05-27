@@ -433,13 +433,12 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 // });
 
 
-
 Export.image.toDrive({
   image: classified,
   description: 'marathon-2013-fullcounty',
   scale: 1,
-  maxPixels: 12000000000
-            //  region: 
+  maxPixels: 12000000000,
+  crs: 'EPSG:3070'
 });
 
 
