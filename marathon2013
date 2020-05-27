@@ -1,16 +1,123 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
     wl = ee.Image("users/erker/UTC/marathon_water/water_lines"),
-    height = ee.Image("users/erker/UTC/marathonHeight/marathon2012Height");
+    height = ee.Image("users/erker/UTC/marathonHeight/marathon2012Height"),
+    grass = /* color: #d6cd2c */ee.Feature(
+        ee.Geometry.MultiPolygon(
+            [[[[-89.64032470260393, 44.94542239712331],
+               [-89.64040382776987, 44.94540626060245],
+               [-89.64042528544199, 44.945375885962605],
+               [-89.64045747195017, 44.9453531049722],
+               [-89.64050306950342, 44.94534456209845],
+               [-89.64052720938456, 44.94531513663475],
+               [-89.64056073699724, 44.945304695337526],
+               [-89.64061438117754, 44.945308492173105],
+               [-89.64067473088038, 44.94528760957439],
+               [-89.6406438854767, 44.9452752698534],
+               [-89.64048429404032, 44.94529425403843]]],
+             [[[-89.63991754193128, 44.945210642760024],
+               [-89.64009456772627, 44.945109077149034],
+               [-89.64007391606104, 44.94502942408994],
+               [-89.64003368292582, 44.945111056390715],
+               [-89.63985263381731, 44.94515851697732]]],
+             [[[-89.64108281605446, 44.94332505141079],
+               [-89.64093797676766, 44.94304312594668],
+               [-89.64090176694596, 44.94305166916291]]],
+             [[[-89.64319805057347, 44.94307701352347],
+               [-89.64319402725995, 44.94293747422756],
+               [-89.64310551436246, 44.9429403219717],
+               [-89.64311087878049, 44.94307701352347]]]]),
+        {
+          "class_2013": 0,
+          "system:index": "0"
+        }),
+    soil = /* color: #c3a782 */ee.Feature(
+        ee.Geometry.Polygon(
+            [[[-89.64080788963044, 44.94305214378601],
+              [-89.6408736037513, 44.943049296047434],
+              [-89.6409446822902, 44.94303458272921],
+              [-89.64099564426148, 44.94300088447003],
+              [-89.64096479885781, 44.94298332339755],
+              [-89.6407374816438, 44.942864667361626],
+              [-89.64072071783745, 44.942874159853496],
+              [-89.64097083382809, 44.94300135909352],
+              [-89.64087628596032, 44.943026039510436],
+              [-89.64081459515297, 44.94301797091378]]]),
+        {
+          "class_2013": 2,
+          "system:index": "0"
+        }),
+    impervious = /* color: #e52828 */ee.Feature(
+        ee.Geometry.MultiPolygon(
+            [[[[-89.64310417325795, 44.943114983341204],
+               [-89.64309746773542, 44.94296879940515],
+               [-89.64298079164327, 44.94296405316721],
+               [-89.64299152047933, 44.94312162805673]]],
+             [[[-89.64601354316959, 44.94446597827458],
+               [-89.64588479713687, 44.94222576877912],
+               [-89.64790181831607, 44.94395719260396],
+               [-89.64587406830081, 44.94215742203051],
+               [-89.64856700615177, 44.94212704567169],
+               [-89.64808420852908, 44.94426853959452],
+               [-89.64863137916812, 44.942119451579465],
+               [-89.648609921496, 44.944435603137244],
+               [-89.64869575218448, 44.944435603137244],
+               [-89.64870328457654, 44.942086941661486],
+               [-89.64581186325849, 44.94211731804153],
+               [-89.64592451603711, 44.94451320438961],
+               [-89.64830095322431, 44.94449042305685]]],
+             [[[-89.64442299322376, 44.94256939980996],
+               [-89.64438544229755, 44.94256939980996],
+               [-89.64436934904346, 44.94275545332197]]]]),
+        {
+          "class_2013": 1,
+          "system:index": "0"
+        }),
+    tree = /* color: #32c133 */ee.Feature(
+        ee.Geometry.MultiPolygon(
+            [[[[-89.64060806505883, 44.94303173498975],
+               [-89.64065902703011, 44.94302034403056],
+               [-89.64067377917969, 44.942974780171134],
+               [-89.64062818162644, 44.9429358610126],
+               [-89.6401172208091, 44.942955795219056],
+               [-89.6401172208091, 44.94297098318122],
+               [-89.64059063070023, 44.94295674446679]]],
+             [[[-89.64274609835446, 44.94303239895553],
+               [-89.64277694375814, 44.94305233312848],
+               [-89.64279437811673, 44.94305138388229],
+               [-89.64285472781957, 44.943012464775684],
+               [-89.64286679776014, 44.942969748652686],
+               [-89.6427876725942, 44.94295076369893],
+               [-89.64288691432775, 44.942933677235175],
+               [-89.64291910083593, 44.94290519978429],
+               [-89.642932511881, 44.942871026824605],
+               [-89.64291775973142, 44.94284539709147],
+               [-89.64286545665563, 44.94284539709147],
+               [-89.64286411555112, 44.94280173159384],
+               [-89.64281181247533, 44.94277894958193],
+               [-89.64274207504094, 44.94277989883259],
+               [-89.64266965539754, 44.94290519978429],
+               [-89.64272061736882, 44.94294696670743],
+               [-89.64273805172742, 44.942997276824485]]]]),
+        {
+          "class_2013": 3,
+          "system:index": "0"
+        }),
+    water = /* color: #4740ff */ee.Feature(
+        ee.Geometry.MultiPoint(),
+        {
+          "class_2013": 4,
+          "system:index": "0"
+        });
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_50k');
-var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2010');
+var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2013');
 
 
 var trainingData = pts //.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
 
-var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2010', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2010');
+var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2013', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2013');
 
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(testpts);  // testpts has greater extent than pts
 var naip13c = naip.filterDate('2013-01-01', '2013-12-31');
@@ -28,6 +135,7 @@ var naip15Gauss53 = naip15.convolve(gauss53);
 var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
 var naip13Gauss104 = naip13.convolve(gauss104);
 var naip15Gauss104 = naip15.convolve(gauss104);
+var heightGauss104 = height.convolve(gauss104);
 var win10 = ee.Kernel.square({radius: 10});
 var entro10 = naip13.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
@@ -39,7 +147,15 @@ var contrast7 = nir13glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var nir13glcm14 = naip13.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir13glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height]);
+
+// Create a list of weights for a 9x9 kernel.
+var upList = [1, 0, 0, 0, 0, 0, 0, 0, 0];
+var list = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+var lists = [upList, list, list, list, list, list, list, list, list];
+var shift = ee.Kernel.fixed(9, 9, lists, -4, -4, false);
+var heightshift = height.convolve(shift);
+
+var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104]);
 
 
 var classProperty = 'class_2013';
@@ -67,7 +183,7 @@ var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
 
 var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 var testClassified = testing.classify(trainedClassifier);
-var testAccuracy = testClassified.errorMatrix('class_2010', 'classification');
+var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
 print('Validation error matrix: ', testAccuracy);
 print('Validation overall accuracy: ', testAccuracy.accuracy());
 
@@ -75,19 +191,18 @@ print('Validation overall accuracy: ', testAccuracy.accuracy());
 var classified = image.classify(trainedClassifier);
 
 
-
-Map.addLayer(naip05);
-Map.addLayer(naip08);
-Map.addLayer(naip10);
+Map.addLayer(height);
+Map.addLayer(naip13);
+Map.addLayer(naip15);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
 
 
-// Export.image.toDrive({
-//   image: classified,
-//   description: 'marathon-2010-5',
-//   scale: 1,
-// });
+Export.image.toDrive({
+  image: classified,
+  description: 'marathon-2013',
+  scale: 1,
+});
 
 
 
