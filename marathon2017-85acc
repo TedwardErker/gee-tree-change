@@ -2519,7 +2519,7 @@ print('Validation overall accuracy: ', validationAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
-
+print(classified);
 
 
 
@@ -2542,3 +2542,13 @@ Export.image.toDrive({
 });
 
 
+Export.image.toAsset({
+  image: classified,
+  description: 'marathonClassified2017',
+  assetId: 'marathonClassified2017',
+  scale: 1,
+  region: marathonExport,
+  pyramidingPolicy: {
+    'classification': 'mode'
+  }
+});
