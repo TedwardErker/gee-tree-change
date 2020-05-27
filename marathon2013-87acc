@@ -446,7 +446,7 @@ var trainedClassifier = ee.Classifier.smileRandomForest(1).train({
 });
 
 var testClassified = testing.classify(trainedClassifier);
-print(testClassified)
+print(testClassified);
 var testAccuracy = testClassified.errorMatrix('class_2013', 'classification');
 print('Testing error matrix: ', testAccuracy);
 print('Testing overall accuracy: ', testAccuracy.accuracy());
@@ -459,6 +459,7 @@ print('Testing overall accuracy: ', testAccuracy.accuracy());
 
 var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 var validationClassified = validation.classify(trainedClassifier);
+print(validationClassified);
 var validationAccuracy = validationClassified.errorMatrix(classProperty, 'classification');
 print('Validation error matrix: ', validationAccuracy);
 print('Validation overall accuracy: ', validationAccuracy.accuracy());
