@@ -418,6 +418,8 @@ var lists = [list, list, list, list, list, list, list, list, list, list, list, l
 var shift = ee.Kernel.fixed(25, 25, lists, -12, -12, false);
 var heightshift = height.convolve(shift);
 
+// classify with height
+
 var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104, heightshift]);
 
 var classProperty = 'class_2013';
@@ -435,11 +437,7 @@ var split = 0.75;
 var training = training.filter(ee.Filter.lt('random', split));
 var testing = training.filter(ee.Filter.gte('random', split));
 print(training.size());
-var testing = image.sampleRegions({collection: testing, properties: [classProperty], scale: 1});
-var testClassified = testing.classify(trainedClassifier);
-var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
-print('Validation error matrix: ', testAccuracy);
-print('Validation overall accuracy: ', testAccuracy.accuracy());
+
 
 
 var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
@@ -448,7 +446,12 @@ var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
   inputProperties: image.bandNames()
 });
 
-// print(trainedClassifier);
+var testing = image.sampleRegions({collection: testing, properties: [classProperty], scale: 1});
+var testClassified = testing.classify(trainedClassifier);
+var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
+print('Validation error matrix: ', testAccuracy);
+print('Validation overall accuracy: ', testAccuracy.accuracy());
+
 
 var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 var validationClassified = validation.classify(trainedClassifier);
@@ -460,7 +463,7 @@ print('Validation overall accuracy: ', validationAccuracy.accuracy());
 var classifiedHeight = image.classify(trainedClassifier);
 
 
-
+// classify without height
 
 var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
 var training = imageNoHeight.sampleRegions({
