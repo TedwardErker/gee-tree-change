@@ -467,7 +467,7 @@ var training = imageNoHeight.sampleRegions({
 training = training.randomColumn();
 var split = 0.75;
 var training = training.filter(ee.Filter.lt('random', split));
-var testing = training.filter(ee.Filter.rt('random', split));
+var testing = training.filter(ee.Filter.gte('random', split));
 print(training.size());
 
 
