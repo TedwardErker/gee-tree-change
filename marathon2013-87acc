@@ -435,7 +435,7 @@ var split = 0.75;
 var training = training.filter(ee.Filter.lt('random', split));
 var testing = training.filter(ee.Filter.gte('random', split));
 print(training.size());
-var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+var testing = image.sampleRegions({collection: testing, properties: [classProperty], scale: 1});
 var testClassified = testing.classify(trainedClassifier);
 var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
 print('Validation error matrix: ', testAccuracy);
