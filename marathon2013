@@ -1,0 +1,102 @@
+var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
+
+// var trainingData = ee.FeatureCollection([grass, tree, soil, impervious, water])
+
+
+var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2010', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2010');
+
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(testpts);  // testpts has greater extent than pts
+var naip05c = naip.filterDate('2005-01-01', '2005-12-31');
+var naip08c = naip.filterDate('2008-01-01', '2008-12-31');
+var naip10c = naip.filterDate('2010-01-01', '2010-12-31');
+
+
+
+
+var naip05 = naip05c.median().byte();
+var naip08 = naip08c.median().byte();
+var naip10 = naip10c.median().byte();
+
+
+
+var ndvi10 = naip10.normalizedDifference(['N', 'R']);
+var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
+var naip10Gauss53 = naip10.convolve(gauss53);
+var naip08Gauss53 = naip08.convolve(gauss53);
+var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
+var naip10Gauss104 = naip10.convolve(gauss104);
+var naip08Gauss104 = naip08.convolve(gauss104);
+var win10 = ee.Kernel.square({radius: 10});
+var entro10 = naip10.select('N').entropy(win10);
+var win5 = ee.Kernel.square({radius: 5});
+var entro5 = naip10.select('N').entropy(win5);
+var nir10glcm3 = naip10.select(['N']).glcmTexture({size: 3, average: false});
+var contrast3 = nir10glcm3.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var nir10glcm7 = naip10.select(['N']).glcmTexture({size: 7, average: false});
+var contrast7 = nir10glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
+var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+
+// var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7]);
+var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
+
+
+var classProperty = 'class_2010';
+
+
+var training = image.sampleRegions({
+  collection: trainingData,
+  properties: [classProperty],
+  scale: 1
+});
+
+training = training.randomColumn();
+
+var split = 0.5;
+var training = training.filter(ee.Filter.lt('random', split));
+print(training.size());
+
+
+var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
+  features: training,
+  classProperty: classProperty,
+  inputProperties: image.bandNames()
+});
+
+// print(trainedClassifier);
+
+var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+var testClassified = testing.classify(trainedClassifier);
+var testAccuracy = testClassified.errorMatrix('class_2010', 'classification');
+print('Validation error matrix: ', testAccuracy);
+print('Validation overall accuracy: ', testAccuracy.accuracy());
+
+
+var classified = image.classify(trainedClassifier);
+
+
+
+Map.addLayer(naip05);
+Map.addLayer(naip08);
+Map.addLayer(naip10);
+Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+
+
+
+// Export.image.toDrive({
+//   image: classified,
+//   description: 'marathon-2010-5',
+//   scale: 1,
+// });
+
+
+
+// // // // // Export.image.toDrive({
+// // // // //   image: classified,
+// // // // //   description: 'active2010-4',
+// // // // //   scale: 1,
+// // // // //   maxPixels: 12000000000
+// // // // //             //  region: 
+// // // // // });
+
+
