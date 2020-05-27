@@ -92,7 +92,10 @@ var wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
              [[[-89.85138578286524, 44.93379249535123],
                [-89.85125837793703, 44.93379154595197],
                [-89.85126106014604, 44.93382192672077],
-               [-89.85138578286524, 44.93382192672077]]]]),
+               [-89.85138578286524, 44.93382192672077]]],
+             [[[-89.8402737106178, 44.92876488013484],
+               [-89.84024487687088, 44.92864999265285],
+               [-89.84018586827256, 44.928757284275385]]]]),
         {
           "class_2013": 1,
           "system:index": "0"
@@ -256,7 +259,7 @@ var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_com
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2013');
 
 
-var trainingData = pts //.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
+var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
 
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2013', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2013');
@@ -308,9 +311,10 @@ var training = image.sampleRegions({
   properties: [classProperty],
   scale: 1
 });
+print(training.size());
 
 // training = training.randomColumn();
-// var split = 0.5;
+// var split = 0.9;
 // var training = training.filter(ee.Filter.lt('random', split));
 // print(training.size());
 
