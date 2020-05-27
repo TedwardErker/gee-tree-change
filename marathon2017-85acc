@@ -2144,6 +2144,90 @@ var geometry = /* color: #1d65f7 */ee.Feature(
               ],
               "geodesic": true,
               "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.62884336190817,
+                    44.95997561602177
+                  ],
+                  [
+                    -89.62855368333456,
+                    44.95959602824423
+                  ],
+                  [
+                    -89.62850003915426,
+                    44.95978582244691
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.6285965986788,
+                    44.96068164260855
+                  ],
+                  [
+                    -89.62816744523641,
+                    44.960476668042894
+                  ],
+                  [
+                    -89.62828546243307,
+                    44.960658867692985
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.63636597182762,
+                    44.960747571443065
+                  ],
+                  [
+                    -89.63619431045066,
+                    44.96093356603482
+                  ],
+                  [
+                    -89.63647862460624,
+                    44.960747571443065
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
+            },
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -89.64008887794029,
+                    44.960466680508546
+                  ],
+                  [
+                    -89.64007814910423,
+                    44.9603490095732
+                  ],
+                  [
+                    -89.64000304725181,
+                    44.9603490095732
+                  ]
+                ]
+              ],
+              "geodesic": true,
+              "evenOdd": true
             }
           ],
           "coordinates": []
@@ -2345,7 +2429,10 @@ var grass = /* color: #fffe58 */geometry2,
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_10k');
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2017', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2017');
 
-var urbanregion = testpts.buffer(3000);
+Map.addLayer(testpts);
+var buf3000 = function(feature) {return feature.buffer(3000)};
+var urbanregion = testpts.map(buf3000);
+Map.addLayer(urbanregion);
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion);  
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
 var naip18c = naip.filterDate('2018-01-01', '2018-12-31');
@@ -2418,12 +2505,12 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 
 
-Export.image.toDrive({
-  image: classified,
-  description: 'marathon2017-fullcounty',
-  scale: 1,
-  maxPixels: 12000000000,
-  crs: 'EPSG:3070'
-});
+// Export.image.toDrive({
+//   image: classified,
+//   description: 'marathon2017-fullcounty',
+//   scale: 1,
+//   maxPixels: 12000000000,
+//   crs: 'EPSG:3070'
+// });
 
 
