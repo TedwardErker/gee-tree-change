@@ -5695,13 +5695,11 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 // });
 
 
-
-// // // // // Export.image.toDrive({
-// // // // //   image: classified,
-// // // // //   description: 'active2010-4',
-// // // // //   scale: 1,
-// // // // //   maxPixels: 12000000000
-// // // // //             //  region: 
-// // // // // });
-
+Export.image.toDrive({
+  image: classified,
+  description: 'marathon-2010-fullcounty',
+  scale: 1,
+  maxPixels: 12000000000,
+  crs: 'EPSG:3070'
+});
 
