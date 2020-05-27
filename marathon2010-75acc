@@ -5686,7 +5686,7 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 // // // // // Export.image.toDrive({
 // // // // //   image: classified,
-// // // // //   description: 'active2017-4',
+// // // // //   description: 'active2010-4',
 // // // // //   scale: 1,
 // // // // //   maxPixels: 12000000000
 // // // // //             //  region: 
