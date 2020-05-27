@@ -2332,19 +2332,7 @@ var geometry = /* color: #1d65f7 */ee.Feature(
           "system:index": "0"
         }),
     wb = ee.Image("users/erker/mar_water_bodies_2"),
-    imageVisParam = {"opacity":1,"bands":["R","G","B"],"min":62.746165077883106,"max":179.7892639724612,"gamma":1},
-    elderon = 
-    /* color: #f7f7f7 */
-    /* displayProperties: [
-      {
-        "type": "rectangle"
-      }
-    ] */
-    ee.Geometry.Polygon(
-        [[[-89.25706868861197, 44.78521002402276],
-          [-89.25706868861197, 44.78178325362632],
-          [-89.24456959460257, 44.78178325362632],
-          [-89.24456959460257, 44.78521002402276]]], null, false);
+    imageVisParam = {"opacity":1,"bands":["R","G","B"],"min":62.746165077883106,"max":179.7892639724612,"gamma":1};
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 
           // I need to upload water layer
