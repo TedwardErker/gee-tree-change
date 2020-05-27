@@ -383,8 +383,7 @@ var lists = [list, list, list, list, list, list, list, list, list, list, list, l
 var shift = ee.Kernel.fixed(25, 25, lists, -12, -12, false);
 var heightshift = height.convolve(shift);
 
-var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);//, height, heightGauss104, heightshift]);
-
+var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104, heightshift]);
 
 var classProperty = 'class_2013';
 
