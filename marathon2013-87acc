@@ -513,4 +513,13 @@ Export.image.toDrive({
   region: marathonExport
 });
 
-
+Export.image.toAsset({
+  image: classified,
+  description: 'marathonClassified2013',
+  assetId: 'marathonClassified2013',
+  scale: 1,
+  region: marathonExport,
+  pyramidingPolicy: {
+    'classification': 'mode'
+  }
+});
