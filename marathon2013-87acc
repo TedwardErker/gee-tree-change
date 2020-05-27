@@ -338,6 +338,7 @@ var wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
     table = ee.FeatureCollection("users/erker/UTC/marathon_shapefiles/marathon-county"),
     marathonExport = 
     /* color: #bf04c2 */
+    /* shown: false */
     /* displayProperties: [
       {
         "type": "rectangle"
@@ -435,7 +436,7 @@ var training = training.filter(ee.Filter.lt('random', split));
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(1).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
@@ -469,14 +470,14 @@ var training = training.filter(ee.Filter.lt('random', split));
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(1).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
   features: training,
   classProperty: classProperty,
-  inputProperties: image.bandNames()
+  inputProperties: imageNoHeight.bandNames()
 });
 
 
-var classifiedNoHeight = image.classify(trainedClassifier);
+var classifiedNoHeight = imageNoHeight.classify(trainedClassifier);
 
 var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
 var classified = classified.mosaic();
