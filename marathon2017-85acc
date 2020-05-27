@@ -2429,10 +2429,8 @@ var grass = /* color: #fffe58 */geometry2,
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_10k');
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2017', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2017');
 
-Map.addLayer(testpts);
 var buf3000 = function(feature) {return feature.buffer(3000)};
 var urbanregion = testpts.map(buf3000);
-Map.addLayer(urbanregion);
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion);  
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
 var naip18c = naip.filterDate('2018-01-01', '2018-12-31');
