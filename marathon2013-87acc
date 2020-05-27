@@ -439,8 +439,6 @@ print(trainingsub.size());
 var testing = training.filter(ee.Filter.gte('random', 0.9));
 print(testing.size());
 
-
-
 var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
   features: trainingsub,
   classProperty: classProperty,
