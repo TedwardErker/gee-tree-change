@@ -5599,7 +5599,12 @@ var grass = /* color: #ebea4c */ee.Feature(
 Map.addLayer(wb);
 Map.addLayer(wl);
 
-var trainingData = ee.FeatureCollection([grass, tree, soil, impervious, water]);
+var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_10k');
+var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2010');
+
+var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
+
+// var trainingData = ee.FeatureCollection([grass, tree, soil, impervious, water]);
 
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2010', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2010');
 
