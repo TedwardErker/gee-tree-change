@@ -345,9 +345,9 @@ var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).me
 
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2013', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2013');
 
-
-var urbanregion = testpts.buffer(3000);
-var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion);  
+var buf3000 = function(feature) {return feature.buffer(3000)};
+var urbanregion = testpts.map(buf3000);
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion); 
 var naip13c = naip.filterDate('2013-01-01', '2013-12-31');
 var naip15c = naip.filterDate('2015-01-01', '2015-12-31');
 
