@@ -5602,13 +5602,10 @@ Map.addLayer(wl);
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_10k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2010');
 
-// var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
-var trainingData = ee.FeatureCollection([grass, tree, soil, impervious, water]).randomColumn();
-var split = 0.5;
-var trainingData = trainingData.filter(ee.Filter.lt('random', split));
-var trainingData = pts.merge(trainingData);
+var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
+// var trainingData = ee.FeatureCollection([grass, tree, soil, impervious, water])
 
 
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2010', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2010');
@@ -5657,6 +5654,11 @@ var training = image.sampleRegions({
   properties: [classProperty],
   scale: 1
 });
+
+training = training.randomColumn();
+
+var split = 0.5;
+var training = training.filter(ee.Filter.lt('random', split));
 print(training.size());
 
 
