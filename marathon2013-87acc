@@ -401,7 +401,7 @@ var training = training.filter(ee.Filter.lt('random', split));
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(1).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
@@ -435,7 +435,7 @@ var training = training.filter(ee.Filter.lt('random', split));
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(1).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
