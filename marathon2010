@@ -5592,10 +5592,9 @@ var grass = /* color: #ebea4c */ee.Feature(
           "class_2010": 4,
           "system:index": "0"
         }),
-    wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
     wl = ee.Image("users/erker/UTC/marathon_water/water_lines");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-wb = wb.unmask(100);
+
 Map.addLayer(wb);
 Map.addLayer(wl);
 
