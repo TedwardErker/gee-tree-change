@@ -394,10 +394,10 @@ var training = image.sampleRegions({
 });
 print(training.size());
 
-// training = training.randomColumn();
-// var split = 0.9;
-// var training = training.filter(ee.Filter.lt('random', split));
-// print(training.size());
+training = training.randomColumn();
+var split = 0.75;
+var training = training.filter(ee.Filter.lt('random', split));
+print(training.size());
 
 
 var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
@@ -426,20 +426,20 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 
 
+// Export.image.toDrive({
+//   image: classified,
+//   description: 'marathon-2013',
+//   scale: 1,
+// });
+
+
+
 Export.image.toDrive({
   image: classified,
-  description: 'marathon-2013',
+  description: 'marathon-2013-fullcounty',
   scale: 1,
+  maxPixels: 12000000000
+            //  region: 
 });
-
-
-
-// // // // // Export.image.toDrive({
-// // // // //   image: classified,
-// // // // //   description: 'active2010-4',
-// // // // //   scale: 1,
-// // // // //   maxPixels: 12000000000
-// // // // //             //  region: 
-// // // // // });
 
 
