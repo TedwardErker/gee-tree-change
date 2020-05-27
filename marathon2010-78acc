@@ -5610,7 +5610,8 @@ var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).me
 
 var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2010', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2010');
 
-var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(testpts);  // testpts has greater extent than pts
+var urbanregion = testpts.buffer(3000);
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion);  
 var naip05c = naip.filterDate('2005-01-01', '2005-12-31');
 var naip08c = naip.filterDate('2008-01-01', '2008-12-31');
 var naip10c = naip.filterDate('2010-01-01', '2010-12-31');
