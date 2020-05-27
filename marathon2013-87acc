@@ -433,7 +433,13 @@ print(training.size());
 training = training.randomColumn();
 var split = 0.75;
 var training = training.filter(ee.Filter.lt('random', split));
+var testing = training.filter(ee.Filter.gte('random', split));
 print(training.size());
+var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+var testClassified = testing.classify(trainedClassifier);
+var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
+print('Validation error matrix: ', testAccuracy);
+print('Validation overall accuracy: ', testAccuracy.accuracy());
 
 
 var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
@@ -444,11 +450,11 @@ var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
 
 // print(trainedClassifier);
 
-var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
-var testClassified = testing.classify(trainedClassifier);
-var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
-print('Validation error matrix: ', testAccuracy);
-print('Validation overall accuracy: ', testAccuracy.accuracy());
+var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+var validationClassified = validation.classify(trainedClassifier);
+var validationAccuracy = validationClassified.errorMatrix(classProperty, 'classification');
+print('Validation error matrix: ', validationAccuracy);
+print('Validation overall accuracy: ', validationAccuracy.accuracy());
 
 
 var classifiedHeight = image.classify(trainedClassifier);
@@ -467,7 +473,6 @@ var training = imageNoHeight.sampleRegions({
 training = training.randomColumn();
 var split = 0.75;
 var training = training.filter(ee.Filter.lt('random', split));
-var testing = training.filter(ee.Filter.gte('random', split));
 print(training.size());
 
 
