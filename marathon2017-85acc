@@ -2415,7 +2415,6 @@ var geometry = /* color: #1d65f7 */ee.Feature(
           "class_2017": 2,
           "system:index": "0"
         }),
-    wb = ee.Image("users/erker/mar_water_bodies_2"),
     imageVisParam = {"opacity":1,"bands":["R","G","B"],"min":62.746165077883106,"max":179.7892639724612,"gamma":1},
     marathonExport = /* color: #ff0000 */ee.Geometry.MultiPolygon(
         [[[[-89.76606124298608, 45.129137941352475],
@@ -2433,7 +2432,9 @@ var geometry = /* color: #1d65f7 */ee.Feature(
          [[[-90.34284346954858, 45.19014423377814],
            [-90.34284346954858, 45.18724065341271],
            [-90.30988448517358, 45.18724065341271],
-           [-90.30988448517358, 45.19014423377814]]]], null, false);
+           [-90.30988448517358, 45.19014423377814]]]], null, false),
+    wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
+    wl = ee.Image("users/erker/UTC/marathon_water/water_lines");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var grass = /* color: #fffe58 */geometry2,
     tree = /* color: #2ca919 */geometry3,
@@ -2476,7 +2477,7 @@ var contrast3 = nir17glcm3.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var nir17glcm7 = naip17.select(['N']).glcmTexture({size: 7, average: false});
 var contrast7 = nir17glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip17, naip18, ndvi, naip17Gauss53, naip17Gauss104, naip18Gauss104, entro10, entro5, contrast3, contrast7]);
+var image = ee.Image.cat([naip17, naip18, ndvi, naip17Gauss53, naip17Gauss104, naip18Gauss104, entro10, entro5, contrast3, contrast7, wb, wl]);
 
 
 var classProperty = 'class_2017';
@@ -2536,7 +2537,8 @@ Export.image.toDrive({
   description: 'marathon2017-fullcounty',
   scale: 1,
   maxPixels: 12000000000,
-  crs: 'EPSG:3070'
+  crs: 'EPSG:3070',
+  region: marathonExport
 });
 
 
