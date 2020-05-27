@@ -5612,18 +5612,6 @@ var grass = /* color: #ebea4c */ee.Feature(
            [-90.30988448517358, 45.18724065341271],
            [-90.30988448517358, 45.19014423377814]]]], null, false);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-
-           
-           
-           
-           
-
-           
-           
-           
-Map.addLayer(wb);
-Map.addLayer(wl);
-
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_50k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2010');
 
@@ -5668,7 +5656,6 @@ var contrast7 = nir10glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-// var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7]);
 var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
 
 
