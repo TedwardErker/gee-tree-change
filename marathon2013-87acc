@@ -445,8 +445,6 @@ var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
   inputProperties: image.bandNames()
 });
 
-var testing = image.sampleRegions({collection: testing, properties: [classProperty], scale: 1});
-print(testing);
 var testClassified = testing.classify(trainedClassifier);
 print(testClassified);
 var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
