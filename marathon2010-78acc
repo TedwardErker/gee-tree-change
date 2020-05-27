@@ -5704,3 +5704,14 @@ Export.image.toDrive({
   crs: 'EPSG:3070'
 });
 
+
+Export.image.toAsset({
+  image: classified,
+  description: 'marathonClassified2010',
+  assetId: 'marathonClassified2010',
+  scale: 1,
+  region: marathonExport,
+  pyramidingPolicy: {
+    'classification': 'mode'
+  }
+});
