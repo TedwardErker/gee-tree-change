@@ -2435,9 +2435,6 @@ var geometry = /* color: #1d65f7 */ee.Feature(
            [-90.30988448517358, 45.18724065341271],
            [-90.30988448517358, 45.19014423377814]]]], null, false);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-
-           
-          // I need to upload water layer
 var grass = /* color: #fffe58 */geometry2,
     tree = /* color: #2ca919 */geometry3,
     soil = /* color: #d6b257 */geometry5,
