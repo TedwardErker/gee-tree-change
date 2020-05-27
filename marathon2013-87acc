@@ -439,23 +439,17 @@ print(training.size());
 var testing = trainingFull.filter(ee.Filter.gte('random', 0.999));
 print(testing.size());
 
-var trainedClassifier = ee.Classifier.smileRandomForest(1).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
 });
-
-var testClassified = testing.classify(trainedClassifier);
-print(testClassified);
-var testAccuracy = testClassified.errorMatrix('class_2013', 'classification');
-print('Testing error matrix: ', testAccuracy);
-print('Testing overall accuracy: ', testAccuracy.accuracy());
-
-// var testingClassified = testing.classify(trainedClassifier);
-// var testAccuracy = testingClassified.errorMatrix('class_2017', 'classification');
+// for some reason I cannot figure out this gives a memory limit exceeded error.
+// var testClassified = testing.classify(trainedClassifier);
+// print(testClassified);
+// var testAccuracy = testClassified.errorMatrix('class_2013', 'classification');
 // print('Testing error matrix: ', testAccuracy);
 // print('Testing overall accuracy: ', testAccuracy.accuracy());
-
 
 var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 var validationClassified = validation.classify(trainedClassifier);
@@ -465,67 +459,67 @@ print('Validation error matrix: ', validationAccuracy);
 print('Validation overall accuracy: ', validationAccuracy.accuracy());
 
 
-// var classifiedHeight = image.classify(trainedClassifier);
+var classifiedHeight = image.classify(trainedClassifier);
 
 
-// // classify without height
+// classify without height
 
-// var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
-// var training = imageNoHeight.sampleRegions({
-//   collection: trainingData,
-//   properties: [classProperty],
-//   scale: 1
-// });
-
-
-// training = training.randomColumn();
-// var split = 0.75;
-// var trainingsub = training.filter(ee.Filter.lt('random', split));
-// print(trainingsub.size());
+var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
+var training = imageNoHeight.sampleRegions({
+  collection: trainingData,
+  properties: [classProperty],
+  scale: 1
+});
 
 
-// var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
-//   features: trainingsub,
-//   classProperty: classProperty,
-//   inputProperties: imageNoHeight.bandNames()
-// });
+training = training.randomColumn();
+var split = 0.75;
+var trainingsub = training.filter(ee.Filter.lt('random', split));
+print(trainingsub.size());
 
 
-// var classifiedNoHeight = imageNoHeight.classify(trainedClassifier);
-
-// var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
-// var classified = classified.mosaic();
-
-// Map.addLayer(height);
-// Map.addLayer(heightshift);
-// Map.addLayer(naip13);
-// Map.addLayer(naip15);
-// Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
+  features: trainingsub,
+  classProperty: classProperty,
+  inputProperties: imageNoHeight.bandNames()
+});
 
 
-// // Export.image.toDrive({
-// //   image: classified,
-// //   description: 'marathon-2013',
-// //   scale: 1,
-// // });
+var classifiedNoHeight = imageNoHeight.classify(trainedClassifier);
+
+var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
+var classified = classified.mosaic();
+
+Map.addLayer(height);
+Map.addLayer(heightshift);
+Map.addLayer(naip13);
+Map.addLayer(naip15);
+Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
 
 // Export.image.toDrive({
 //   image: classified,
-//   description: 'marathon-2013-fullcounty',
+//   description: 'marathon-2013',
 //   scale: 1,
-//   maxPixels: 12000000000,
-//   crs: 'EPSG:3070',
-//   region: marathonExport
 // });
 
-// Export.image.toAsset({
-//   image: classified,
-//   description: 'marathonClassified2013',
-//   assetId: 'marathonClassified2013',
-//   scale: 1,
-//   region: marathonExport,
-//   pyramidingPolicy: {
-//     'classification': 'mode'
-//   }
-// });
+
+Export.image.toDrive({
+  image: classified,
+  description: 'marathon-2013-fullcounty',
+  scale: 1,
+  maxPixels: 12000000000,
+  crs: 'EPSG:3070',
+  region: marathonExport
+});
+
+Export.image.toAsset({
+  image: classified,
+  description: 'marathonClassified2013',
+  assetId: 'marathonClassified2013',
+  scale: 1,
+  region: marathonExport,
+  pyramidingPolicy: {
+    'classification': 'mode'
+  }
+});
