@@ -385,7 +385,6 @@ var heightshift = height.convolve(shift);
 
 var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104, heightshift]);
 
-var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
 var classProperty = 'class_2013';
 
 
@@ -417,8 +416,36 @@ print('Validation error matrix: ', testAccuracy);
 print('Validation overall accuracy: ', testAccuracy.accuracy());
 
 
-var classified = image.classify(trainedClassifier);
+var classifiedHeight = image.classify(trainedClassifier);
 
+
+
+
+var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
+var training = imageNoHeight.sampleRegions({
+  collection: trainingData,
+  properties: [classProperty],
+  scale: 1
+});
+
+
+training = training.randomColumn();
+var split = 0.75;
+var training = training.filter(ee.Filter.lt('random', split));
+print(training.size());
+
+
+var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
+  features: training,
+  classProperty: classProperty,
+  inputProperties: image.bandNames()
+});
+
+
+var classifiedNoHeight = image.classify(trainedClassifier);
+
+var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
+var classified = classified.mosaic();
 
 Map.addLayer(height);
 Map.addLayer(heightshift);
