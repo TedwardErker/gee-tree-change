@@ -2496,7 +2496,7 @@ print(training.size());
 print(testing.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(150).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
