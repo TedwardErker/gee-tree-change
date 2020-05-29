@@ -2416,7 +2416,10 @@ var geometry = /* color: #1d65f7 */ee.Feature(
           "system:index": "0"
         }),
     imageVisParam = {"opacity":1,"bands":["R","G","B"],"min":62.746165077883106,"max":179.7892639724612,"gamma":1},
-    marathonExport = /* color: #ff0000 */ee.Geometry.MultiPolygon(
+    marathonExport = 
+    /* color: #ff0000 */
+    /* shown: false */
+    ee.Geometry.MultiPolygon(
         [[[[-89.76606124298608, 45.129137941352475],
            [-89.76606124298608, 45.12429337431917],
            [-89.76056807892358, 45.12429337431917],
