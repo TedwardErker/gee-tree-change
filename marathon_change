@@ -5,4 +5,7 @@ var mar2017 = ee.Image("users/erker/UTC/marathon_landcover/2017/marathon2017-ful
 Map.addLayer(mar2013, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']}, "2013");
 Map.addLayer(mar2017, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']}, "2017");
 
+// make tree not tree
+
+
 
