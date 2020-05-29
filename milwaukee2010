@@ -138,7 +138,6 @@ var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
 var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height]);
-var image = ee.Image.cat([naip10, ndvi10, wl, wb, height]);
 
 print(image);
 
@@ -167,8 +166,8 @@ var trainedClassifier = ee.Classifier.smileRandomForest(1).train({
 var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 var testClassified = testing.classify(trainedClassifier);
 var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
-print('Validation error matrix: ', testAccuracy);
-print('Validation overall accuracy: ', testAccuracy.accuracy());
+print('testing error matrix: ', testAccuracy);
+print('testing overall accuracy: ', testAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
