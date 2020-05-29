@@ -7,9 +7,16 @@ var milwaukeeExport = ee.Geometry.Polygon(
     wl = ee.Image("users/erker/milwaukee/milwaukee_water/mke_water_lines_26916_input"),
     height = ee.Image("users/erker/milwaukee/milwaukee_height/mke_2010height");
 
-var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_50k');
-var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2010');
+var pts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/combined_milwaukee_training_points');
 
+
+
+var classProperty = 'class_2010';
+
+
+
+
+var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], classProperty);
 
 var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
@@ -52,7 +59,6 @@ var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_co
 var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
 
 
-var classProperty = 'class_2010';
 
 
 var training = image.sampleRegions({
