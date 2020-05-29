@@ -1,0 +1,14 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var milwaukeeExport = 
+    /* color: #d6d6d6 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[-88.35575750089527, 43.35209206347098],
+          [-88.35575750089527, 42.80743795582355],
+          [-87.76249578214527, 42.80743795582355],
+          [-87.76249578214527, 43.35209206347098]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
