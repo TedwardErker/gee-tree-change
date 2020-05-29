@@ -248,6 +248,7 @@ var naip08Gauss53 = naip08.convolve(gauss53);
 var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
 var naip10Gauss104 = naip10.convolve(gauss104);
 var naip08Gauss104 = naip08.convolve(gauss104);
+var heightGauss104 = height.convolve(gauss104);
 var win10 = ee.Kernel.square({radius: 10});
 var entro10 = naip10.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
@@ -259,7 +260,7 @@ var contrast7 = nir10glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, entro5, contrast3, wl, wb, height]);
+var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, entro5, contrast3, wl, wb, height, heightGauss104]);
 
 var training = image.sampleRegions({
   collection: trainingData,
@@ -297,6 +298,7 @@ var classified = image.classify(trainedClassifier);
 Map.addLayer(naip05);
 Map.addLayer(naip08);
 Map.addLayer(height);
+Map.addLayer(heightGauss104);
 Map.addLayer(naip10);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
