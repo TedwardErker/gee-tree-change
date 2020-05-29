@@ -1,12 +1,4 @@
-/**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var milwaukeeExport = 
-    /* color: #d6d6d6 */
-    /* displayProperties: [
-      {
-        "type": "rectangle"
-      }
-    ] */
-    ee.Geometry.Polygon(
+var milwaukeeExport = ee.Geometry.Polygon(
         [[[-88.35575750089527, 43.35209206347098],
           [-88.35575750089527, 42.80743795582355],
           [-87.76249578214527, 42.80743795582355],
@@ -14,7 +6,7 @@ var milwaukeeExport =
     wb = ee.Image("users/erker/milwaukee/milwaukee_water/mke_water_bodies_26916_input"),
     wl = ee.Image("users/erker/milwaukee/milwaukee_water/mke_water_lines_26916_input"),
     height = ee.Image("users/erker/milwaukee/milwaukee_height/mke_2010height");
-/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_50k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2010');
 
