@@ -1,0 +1,4 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var image = ee.Image("users/erker/UTC/marathon_landcover/2013/marathon-2013-fullcounty"),
+    image2 = ee.Image("users/erker/UTC/marathon_landcover/2017/marathon2017-fullcounty");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
