@@ -1209,7 +1209,6 @@ var classProperty = 'class_2010';
 
 var pts = pts.remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
 
-var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
 var testpts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_testing').filter(ee.Filter.neq(classProperty, '')).remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
 // var testpts = testpts.randomColumn();
@@ -1255,18 +1254,21 @@ var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_co
 
 var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, entro10, entro5, contrast3, contrast7, wl, wb, height, heightGauss104]);
 
-var training = image.sampleRegions({
-  collection: trainingData,
-  properties: [classProperty],
-  scale: 1
-});
-print(training.size());
+// var training = image.sampleRegions({
+//   collection: trainingData,
+//   properties: [classProperty],
+//   scale: 1
+// });
 
-training = training.randomColumn();
+var trainingGrass = image.sampleRegions({collection: grass, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
+var trainingImpervious = image.sampleRegions({collection: impervious, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
+var trainingSoil = image.sampleRegions({collection: soil, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
+var trainingTree = image.sampleRegions({collection: tree, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
+var trainingWater = image.sampleRegions({collection: water, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
+var trainingPts = image.sampleRegions({collection: pts, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
 
-var split = 0.01;
-var training = training.filter(ee.Filter.lt('random', split));
-print(training.size());
+var training = trainingPts.merge(trainingGrass).merge(trainingTree).merge(trainingSoil).merge(trainingImpervious).merge(trainingWater);
+
 
 
 var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
@@ -1275,13 +1277,13 @@ var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
   inputProperties: image.bandNames()
 });
 
-// print(trainedClassifier);
+print(trainedClassifier);
 
-var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
-var testClassified = testing.classify(trainedClassifier);
-var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
-print('testing error matrix: ', testAccuracy);
-print('testing overall accuracy: ', testAccuracy.accuracy());
+// var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+// var testClassified = testing.classify(trainedClassifier);
+// var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
+// print('testing error matrix: ', testAccuracy);
+// print('testing overall accuracy: ', testAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
@@ -1295,29 +1297,29 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 Map.addLayer(errors);
 
-// Export.image.toDrive({
-//   image: classified,
-//   description: 'marathon-2010-5',
-//   scale: 1,
-// });
+// // Export.image.toDrive({
+// //   image: classified,
+// //   description: 'marathon-2010-5',
+// //   scale: 1,
+// // });
 
 
-// Export.image.toDrive({
-//   image: classified,
-//   description: 'milwaukee-2010-fullcounty',
-//   scale: 1,
-//   maxPixels: 12000000000,
-//   crs: 'EPSG:3070'
-// });
+// // Export.image.toDrive({
+// //   image: classified,
+// //   description: 'milwaukee-2010-fullcounty',
+// //   scale: 1,
+// //   maxPixels: 12000000000,
+// //   crs: 'EPSG:3070'
+// // });
 
 
-// Export.image.toAsset({
-//   image: classified,
-//   description: 'milwaukeeClassified2010',
-//   assetId: 'milwaukeeClassified2010',
-//   scale: 1,
-//   region: marathonExport,
-//   pyramidingPolicy: {
-//     'classification': 'mode'
-//   }
-// });
+// // Export.image.toAsset({
+// //   image: classified,
+// //   description: 'milwaukeeClassified2010',
+// //   assetId: 'milwaukeeClassified2010',
+// //   scale: 1,
+// //   region: marathonExport,
+// //   pyramidingPolicy: {
+// //     'classification': 'mode'
+// //   }
+// // });
