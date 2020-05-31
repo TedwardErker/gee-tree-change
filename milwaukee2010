@@ -2566,11 +2566,11 @@ var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, entro10
 // });
 
 
-var trainingGrass = image.sampleRegions({collection: grass, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.5));
-var trainingImpervious = image.sampleRegions({collection: impervious, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.5));
-var trainingSoil = image.sampleRegions({collection: soil, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.2));
-var trainingTree = image.sampleRegions({collection: tree, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.5));
-var trainingWater = image.sampleRegions({collection: water, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.2));
+var trainingGrass = image.sampleRegions({collection: grass, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.4));
+var trainingImpervious = image.sampleRegions({collection: impervious, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.4));
+var trainingSoil = image.sampleRegions({collection: soil, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.1));
+var trainingTree = image.sampleRegions({collection: tree, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.4));
+var trainingWater = image.sampleRegions({collection: water, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.1));
 var trainingPts = image.sampleRegions({collection: pts, properties: [classProperty], scale: 1}); //.randomColumn().filter(ee.Filter.lt('random', 0.));
 
 var training = trainingPts.merge(trainingGrass).merge(trainingTree).merge(trainingSoil).merge(trainingImpervious).merge(trainingWater);
