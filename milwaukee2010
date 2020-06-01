@@ -10199,16 +10199,16 @@ var image = ee.Image.cat([naip10, contrast3, height, heightGauss104, wb, wl]);
 
 
 
-var trainingGrass = image.sampleRegions({collection: grass, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
+var trainingGrass = image.sampleRegions({collection: grass, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.02));
 print(trainingGrass.size());
 
-var trainingImpervious = image.sampleRegions({collection: impervious, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
+var trainingImpervious = image.sampleRegions({collection: impervious, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.026));
 print(trainingImpervious.size());
 
-var trainingSoil = image.sampleRegions({collection: soil, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
+var trainingSoil = image.sampleRegions({collection: soil, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.002));
 print(trainingSoil.size());
 
-var trainingTree = image.sampleRegions({collection: tree, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.03));
+var trainingTree = image.sampleRegions({collection: tree, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.045));
 print(trainingTree.size());
 
 var trainingWater = image.sampleRegions({collection: water, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
