@@ -10171,10 +10171,10 @@ var ndvi10 = naip10.normalizedDifference(['N', 'R']);
 var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
 var naip10Gauss53 = naip10.convolve(gauss53);
 var naip08Gauss53 = naip08.convolve(gauss53);
+var heightGauss53 = height.convolve(gauss53);
 var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
 var naip10Gauss104 = naip10.convolve(gauss104);
 var naip08Gauss104 = naip08.convolve(gauss104);
-var heightGauss104 = height.convolve(gauss104);
 var win10 = ee.Kernel.square({radius: 10});
 var entro10 = naip10.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
@@ -10186,9 +10186,9 @@ var contrast7 = nir10glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, entro10, entro5, contrast7, contrast14, wl, wb, height, heightGauss104]);
-var image = ee.Image.cat([naip08, naip10, entro10, entro5, contrast7, contrast14, wl, wb, height, heightGauss104]);
-var image = ee.Image.cat([naip10, contrast3, height, heightGauss104, wb, wl]);
+// var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, entro10, entro5, contrast7, contrast14, wl, wb, height, heightGauss104]);
+var image = ee.Image.cat([naip08, naip10, entro5, contrast7, contrast14, wl, wb, heightGauss53]);
+//var image = ee.Image.cat([naip10, contrast3, height, heightGauss104, wb, wl]);
 
 // // var training = image.sampleRegions({
 // //   collection: trainingData,
@@ -10215,65 +10215,62 @@ var trainingWater = image.sampleRegions({collection: water, properties: [classPr
 print(trainingWater.size());
 
 
-
-
-
 var trainingPts = image.sampleRegions({collection: pts, properties: [classProperty], scale: 1}); //.randomColumn().filter(ee.Filter.lt('random', 0.));
 
 var training = trainingPts.merge(trainingGrass).merge(trainingTree).merge(trainingSoil).merge(trainingImpervious).merge(trainingWater);
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
-  features: training,
-  classProperty: classProperty,
-  inputProperties: image.bandNames()
-});
+// var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
+//   features: training,
+//   classProperty: classProperty,
+//   inputProperties: image.bandNames()
+// });
 
-print(trainedClassifier);
+// print(trainedClassifier);
 
-var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+// var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 
-var testClassified = testing.classify(trainedClassifier);
-var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
-print('testing error matrix: ', testAccuracy);
-print('testing overall accuracy: ', testAccuracy.accuracy());
-
-
-var classified = image.classify(trainedClassifier);
+// var testClassified = testing.classify(trainedClassifier);
+// var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
+// print('testing error matrix: ', testAccuracy);
+// print('testing overall accuracy: ', testAccuracy.accuracy());
 
 
-
-Map.addLayer(naip05);
-Map.addLayer(naip08);
-Map.addLayer(naip10);
-Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
-
-//Map.addLayer(errors);
-
-// // Export.image.toDrive({
-// //   image: classified,
-// //   description: 'marathon-2010-5',
-// //   scale: 1,
-// // });
+// var classified = image.classify(trainedClassifier);
 
 
-// // Export.image.toDrive({
-// //   image: classified,
-// //   description: 'milwaukee-2010-fullcounty',
-// //   scale: 1,
-// //   maxPixels: 12000000000,
-// //   crs: 'EPSG:3070'
-// // });
+
+// Map.addLayer(naip05);
+// Map.addLayer(naip08);
+// Map.addLayer(naip10);
+// Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+
+// //Map.addLayer(errors);
+
+// // // Export.image.toDrive({
+// // //   image: classified,
+// // //   description: 'marathon-2010-5',
+// // //   scale: 1,
+// // // });
 
 
-// // Export.image.toAsset({
-// //   image: classified,
-// //   description: 'milwaukeeClassified2010',
-// //   assetId: 'milwaukeeClassified2010',
-// //   scale: 1,
-// //   region: marathonExport,
-// //   pyramidingPolicy: {
-// //     'classification': 'mode'
-// //   }
-// // });
+// // // Export.image.toDrive({
+// // //   image: classified,
+// // //   description: 'milwaukee-2010-fullcounty',
+// // //   scale: 1,
+// // //   maxPixels: 12000000000,
+// // //   crs: 'EPSG:3070'
+// // // });
+
+
+// // // Export.image.toAsset({
+// // //   image: classified,
+// // //   description: 'milwaukeeClassified2010',
+// // //   assetId: 'milwaukeeClassified2010',
+// // //   scale: 1,
+// // //   region: marathonExport,
+// // //   pyramidingPolicy: {
+// // //     'classification': 'mode'
+// // //   }
+// // // });
