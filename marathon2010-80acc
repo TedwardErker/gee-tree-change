@@ -5725,6 +5725,7 @@ Export.image.toAsset({
   description: 'marathonClassified2010',
   assetId: 'marathonClassified2010',
   scale: 1,
+  maxPixels: 12000000000,
   region: marathonExport,
   pyramidingPolicy: {
     'classification': 'mode'
