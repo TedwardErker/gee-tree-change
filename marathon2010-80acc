@@ -5714,6 +5714,7 @@ Export.image.toDrive({
   image: classified,
   description: 'marathon-2010-fullcounty',
   scale: 1,
+  region: marathonExport,
   maxPixels: 12000000000,
   crs: 'EPSG:3070'
 });
