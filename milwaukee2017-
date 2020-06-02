@@ -18,7 +18,18 @@ var grass = /* color: #dee61c */ee.Feature(
           "system:index": "0"
         }),
     tree = /* color: #23c049 */ee.Feature(
-        ee.Geometry.MultiPoint(),
+        ee.Geometry.MultiPoint(
+            [[-87.89793756998664, 43.032077221511194],
+             [-87.89763716257697, 43.03341042799523],
+             [-87.90634897745734, 43.03114395974015],
+             [-87.90689614809638, 43.031136117144136],
+             [-87.9043963292945, 43.03215564622374],
+             [-87.90282455481177, 43.032304652901495],
+             [-87.90260461367255, 43.032328180238565],
+             [-87.89873686827308, 43.03283793699427],
+             [-87.89854911364203, 43.032881070063944],
+             [-87.89836672342902, 43.032826173424574],
+             [-87.89762106932288, 43.03308497143738]]),
         {
           "class_2017": 3,
           "system:index": "0"
@@ -76,36 +87,30 @@ var contrast7 = nir17glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var nir17glcm14 = naip17.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir17glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip08, naip10, entro5, contrast7, wl, wb]);
+var image = ee.Image.cat([naip17, naip17Gauss53, naip18, naip18Gauss53, entro5, contrast3, contrast7, wl, wb]);
+var image = ee.Image.cat([naip17Gauss53, naip18, contrast3, wl, wb]);
+
+print(image);
+
+// var training = image.sampleRegions({
+//   collection: trainingData,
+//   properties: [classProperty],
+//   scale: 1
+// });
 
 
-
-
-
-
-var trainingGrass = image.sampleRegions({collection: grass, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.02));
-print(trainingGrass.size());
-
-var trainingImpervious = image.sampleRegions({collection: impervious, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.026));
-print(trainingImpervious.size());
-
-var trainingSoil = image.sampleRegions({collection: soil, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.002));
-print(trainingSoil.size());
-
-var trainingTree = image.sampleRegions({collection: tree, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.045));
-print(trainingTree.size());
-
-var trainingWater = image.sampleRegions({collection: water, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
-print(trainingWater.size());
-
-
-var trainingPts = image.sampleRegions({collection: pts, properties: [classProperty], scale: 1}); //.randomColumn().filter(ee.Filter.lt('random', 0.));
+var trainingGrass = image.sampleRegions({collection: grass, properties: [classProperty], scale: 1})
+var trainingImpervious = image.sampleRegions({collection: impervious, properties: [classProperty], scale: 1})
+var trainingSoil = image.sampleRegions({collection: soil, properties: [classProperty], scale: 1})
+var trainingTree = image.sampleRegions({collection: tree, properties: [classProperty], scale: 1})
+var trainingWater = image.sampleRegions({collection: water, properties: [classProperty], scale: 1})
+var trainingPts = image.sampleRegions({collection: pts, properties: [classProperty], scale: 1});
 
 var training = trainingPts.merge(trainingGrass).merge(trainingTree).merge(trainingSoil).merge(trainingImpervious).merge(trainingWater);
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(20).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(10).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
@@ -123,14 +128,9 @@ print('testing overall accuracy: ', testAccuracy.accuracy());
 
 var classified = image.classify(trainedClassifier);
 
-
-
-Map.addLayer(naip05);
-Map.addLayer(naip08);
-Map.addLayer(naip10);
+Map.addLayer(naip18);
+Map.addLayer(naip17);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
-
-//Map.addLayer(errors);
 
 // // Export.image.toDrive({
 // //   image: classified,
