@@ -606,6 +606,7 @@ var naip15 = naip15c.median().byte();
 var ndvi13 = naip13.normalizedDifference(['N', 'R']);
 var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
 var naip13Gauss53 = naip13.convolve(gauss53);
+var naip15Gauss53 = naip15.convolve(gauss53);
 var heightGauss53 = height.convolve(gauss53);
 
 var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
@@ -626,8 +627,7 @@ var contrast14 = nir13glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_co
 
 // var image = ee.Image.cat([naip13, ndvi13, naip13Gauss53, entro10, entro5, contrast7, contrast14, wl, wb]);
 // var image = naip13;
-// var image = ee.Image.cat([naip13, naip13Gauss53, naip15, entro5, contrast3, contrast7, wl, wb, heightGauss53]);
-var image = ee.Image.cat([naip13, naip13Gauss53, naip15, nir13glcm3, nir13glcm7, wl, wb, heightGauss53]);
+var image = ee.Image.cat([naip13, naip13Gauss53, naip15, naip15Gauss53, entro5, contrast3, contrast7, wl, wb, height, heightGauss53]);
 
 print(image);
 
