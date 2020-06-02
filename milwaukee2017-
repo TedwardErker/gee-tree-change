@@ -363,7 +363,7 @@ var nir17glcm14 = naip17.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir17glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
 var image = ee.Image.cat([naip17, naip17Gauss53, naip18, naip18Gauss53, entro5, contrast3, contrast7, wl, wb, height, heightGauss53]);
-var image = ee.Image.cat([naip17, naip17Gauss53, naip18, contrast3, wl, wb, height, heightGauss53]);
+var image = ee.Image.cat([naip17, naip17Gauss53, naip18, contrast3, contrast7, wl, wb, height, heightGauss53]);
 
 print(image);
 
