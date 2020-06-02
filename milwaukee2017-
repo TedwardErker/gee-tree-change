@@ -47,7 +47,8 @@ var milwaukeeExport = ee.Geometry.Polygon(
           [-87.76249578214527, 42.80743795582355],
           [-87.76249578214527, 43.35209206347098]]], null, false),
     wb = ee.Image("users/erker/milwaukee/milwaukee_water/mke_water_bodies_26916_input"),
-    wl = ee.Image("users/erker/milwaukee/milwaukee_water/mke_water_lines_26916_input");
+    wl = ee.Image("users/erker/milwaukee/milwaukee_water/mke_water_lines_26916_input"),
+    height = ee.Image("users/erker/milwaukee/milwaukee_height/mke_2015height");
 
 var pts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_training');
 
@@ -75,7 +76,7 @@ var naip18 = naip18c.median().byte();
 var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
 var naip17Gauss53 = naip17.convolve(gauss53);
 var naip18Gauss53 = naip18.convolve(gauss53);
-
+var heightGauss53 = height.convolve(gauss53);
 var win10 = ee.Kernel.square({radius: 10});
 var entro10 = naip17.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
@@ -87,8 +88,8 @@ var contrast7 = nir17glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var nir17glcm14 = naip17.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir17glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip17, naip17Gauss53, naip18, naip18Gauss53, entro5, contrast3, contrast7, wl, wb]);
-var image = ee.Image.cat([naip17Gauss53, naip18, contrast3, wl, wb]);
+var image = ee.Image.cat([naip17, naip17Gauss53, naip18, naip18Gauss53, entro5, contrast3, contrast7, wl, wb, height, heightGauss53]);
+var image = ee.Image.cat([naip17, naip17Gauss53, naip18, contrast3, wl, wb, height, heightGauss53]);
 
 print(image);
 
