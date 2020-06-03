@@ -10346,29 +10346,27 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 //Map.addLayer(errors);
 
-// // Export.image.toDrive({
-// //   image: classified,
-// //   description: 'marathon-2010-5',
-// //   scale: 1,
-// // });
 
 
-// // Export.image.toDrive({
-// //   image: classified,
-// //   description: 'milwaukee-2010-fullcounty',
-// //   scale: 1,
-// //   maxPixels: 12000000000,
-// //   crs: 'EPSG:3070'
-// // });
+
+Export.image.toDrive({
+  image: classified,
+  description: 'milwaukee-2010-fullcounty',
+  scale: 1,
+  maxPixels: 12000000000,
+  region: milwaukeeExport,
+  crs: 'EPSG:26916'
+});
 
 
-// // Export.image.toAsset({
-// //   image: classified,
-// //   description: 'milwaukeeClassified2010',
-// //   assetId: 'milwaukeeClassified2010',
-// //   scale: 1,
-// //   region: marathonExport,
-// //   pyramidingPolicy: {
-// //     'classification': 'mode'
-// //   }
-// // });
+Export.image.toAsset({
+  image: classified,
+  description: 'milwaukeeClassified2010',
+  assetId: 'milwaukeeClassified2010',
+  scale: 1,
+  maxPixels: 12000000000,
+  region: milwaukeeExport,
+  pyramidingPolicy: {
+    'classification': 'mode'
+  }
+});
