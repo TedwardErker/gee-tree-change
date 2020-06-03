@@ -2444,9 +2444,11 @@ var grass = /* color: #fffe58 */geometry2,
     soil = /* color: #d6b257 */geometry5,
     impervious = /* color: #ff3e0c */geometry4,
     water = /* color: #1d65f7 */geometry;
+    
+var classProperty = 'class_2017';
 
-var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_10k');
-var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2017', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2017');
+var pts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_training').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
 
 var buf3000 = function(feature) {return feature.buffer(3000)};
 var urbanregion = testpts.map(buf3000);
@@ -2454,8 +2456,6 @@ var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion);
 var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
 var naip18c = naip.filterDate('2018-01-01', '2018-12-31');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
-
-var grass = ee.Feature(grass).set('class_2017', 0);
 
 var pts = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
@@ -2483,7 +2483,6 @@ var contrast7 = nir17glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var image = ee.Image.cat([naip17, naip18, ndvi, naip17Gauss53, naip17Gauss104, naip18Gauss104, entro10, entro5, contrast3, contrast7, wb, wl]);
 
 
-var classProperty = 'class_2017';
 
 var trainingFull = image.sampleRegions({
   collection: pts,
