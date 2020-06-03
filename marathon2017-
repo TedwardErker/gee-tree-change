@@ -30,7 +30,8 @@ var grass = /* color: #dde026 */ee.Feature(
           "system:index": "0"
         });
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
- var classProperty = 'class_2017';
+
+var classProperty = 'class_2017';
 
 var pts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_training').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
 
@@ -68,19 +69,12 @@ var image = ee.Image.cat([naip17, naip18, ndvi, naip17Gauss53, naip17Gauss104, n
 
 
 
-var trainingFull = image.sampleRegions({
+var training = image.sampleRegions({
   collection: pts,
   properties: [classProperty],
   scale: 1
 });
 print(trainingFull.size());
-
-trainingFull = trainingFull.randomColumn();
-var training = trainingFull.filter(ee.Filter.lt('random', 0.9));
-var testing = trainingFull.filter(ee.Filter.gte('random', 0.9));
-print(training.size());
-print(testing.size());
-
 
 var trainedClassifier = ee.Classifier.smileRandomForest(200).train({
   features: training,
@@ -90,18 +84,17 @@ var trainedClassifier = ee.Classifier.smileRandomForest(200).train({
 
 // print(trainedClassifier);
 
-
+var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 var testingClassified = testing.classify(trainedClassifier);
 var testAccuracy = testingClassified.errorMatrix('class_2017', 'classification');
 print('Testing error matrix: ', testAccuracy);
 print('Testing overall accuracy: ', testAccuracy.accuracy());
 
-var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
-var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
-var validationClassified = validation.classify(trainedClassifier);
-var validationAccuracy = validationClassified.errorMatrix('class_2017', 'classification');
-print('Validation error matrix: ', validationAccuracy);
-print('Validation overall accuracy: ', validationAccuracy.accuracy());
+// var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+// var validationClassified = validation.classify(trainedClassifier);
+// var validationAccuracy = validationClassified.errorMatrix('class_2017', 'classification');
+// print('Validation error matrix: ', validationAccuracy);
+// print('Validation overall accuracy: ', validationAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
@@ -118,24 +111,24 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 
 
-Export.image.toDrive({
-  image: classified,
-  description: 'marathon2017-fullcounty',
-  scale: 1,
-  maxPixels: 12000000000,
-  region: marathonExport,
-  crs: 'EPSG:3070',
-});
+// Export.image.toDrive({
+//   image: classified,
+//   description: 'marathon2017-fullcounty',
+//   scale: 1,
+//   maxPixels: 12000000000,
+//   region: marathonExport,
+//   crs: 'EPSG:3070',
+// });
 
 
-Export.image.toAsset({
-  image: classified,
-  description: 'marathonClassified2017',
-  assetId: 'marathonClassified2017',
-  scale: 1,
-  maxPixels: 12000000000,
-  region: marathonExport,
-  pyramidingPolicy: {
-    'classification': 'mode'
-  }
-});
+// Export.image.toAsset({
+//   image: classified,
+//   description: 'marathonClassified2017',
+//   assetId: 'marathonClassified2017',
+//   scale: 1,
+//   maxPixels: 12000000000,
+//   region: marathonExport,
+//   pyramidingPolicy: {
+//     'classification': 'mode'
+//   }
+// });
