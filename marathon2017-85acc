@@ -2499,7 +2499,7 @@ print(training.size());
 print(testing.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(150).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(300).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
@@ -2540,8 +2540,8 @@ Export.image.toDrive({
   description: 'marathon2017-fullcounty',
   scale: 1,
   maxPixels: 12000000000,
+  region: marathonExport,
   crs: 'EPSG:3070',
-  region: marathonExport
 });
 
 
@@ -2550,6 +2550,7 @@ Export.image.toAsset({
   description: 'marathonClassified2017',
   assetId: 'marathonClassified2017',
   scale: 1,
+  maxPixels: 12000000000,
   region: marathonExport,
   pyramidingPolicy: {
     'classification': 'mode'
