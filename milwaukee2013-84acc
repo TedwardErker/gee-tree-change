@@ -155,7 +155,8 @@ var grass = /* color: #eaed21 */ee.Feature(
              [-87.87665189342461, 42.903702620305594],
              [-87.87435324029884, 42.90336861782162],
              [-87.88071513823893, 42.90257166709383],
-             [-87.88073257259752, 42.90262962722741]]),
+             [-87.88073257259752, 42.90262962722741],
+             [-87.86236621926577, 42.90865095030092]]),
         {
           "class_2013": 1,
           "system:index": "0"
@@ -649,7 +650,7 @@ var training = trainingPts.merge(trainingGrass).merge(trainingTree).merge(traini
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(300).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
