@@ -680,7 +680,7 @@ Export.image.toDrive({
   scale: 1,
         region: milwaukeeExport,
   maxPixels: 12000000000,
-  crs: 'EPSG:3070'
+  crs: 'EPSG:26916'
 });
 
 
