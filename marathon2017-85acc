@@ -2439,118 +2439,153 @@ var geometry = /* color: #1d65f7 */ee.Feature(
     wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
     wl = ee.Image("users/erker/UTC/marathon_water/water_lines");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-var grass = /* color: #fffe58 */geometry2,
-    tree = /* color: #2ca919 */geometry3,
-    soil = /* color: #d6b257 */geometry5,
-    impervious = /* color: #ff3e0c */geometry4,
-    water = /* color: #1d65f7 */geometry;
-    
-var classProperty = 'class_2017';
+var milwaukeeExport = ee.Geometry.Polygon(
+        [[[-88.35575750089527, 43.35209206347098],
+          [-88.35575750089527, 42.80743795582355],
+          [-87.76249578214527, 42.80743795582355],
+          [-87.76249578214527, 43.35209206347098]]], null, false),
+    wb = ee.Image("users/erker/milwaukee/milwaukee_water/mke_water_bodies_26916_input"),
+    wl = ee.Image("users/erker/milwaukee/milwaukee_water/mke_water_lines_26916_input"),
+    height = ee.Image("users/erker/milwaukee/milwaukee_height/mke_2010height");
 
-var pts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_training').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
-var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+var pts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_training');
+
+var classProperty = 'class_2010';
+
+var pts = pts.remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+
+
+var testpts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_testing').filter(ee.Filter.neq(classProperty, '')).remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+// var testpts = testpts.randomColumn();
+// // testpts =  testpts.filter(ee.Filter.lt('random', 0.2));
+// // print(testpts.size());
+
+
 
 var buf3000 = function(feature) {return feature.buffer(3000)};
 var urbanregion = testpts.map(buf3000);
-var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion);  
-var naip17c = naip.filterDate('2017-01-01', '2017-12-31');
-var naip18c = naip.filterDate('2018-01-01', '2018-12-31');
-var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2017');
-
-var pts = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
-
-var naip17 = naip17c.median().byte();
-var naip18 = naip18c.median().byte();
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion); 
+var naip05c = naip.filterDate('2005-01-01', '2005-12-31');
+var naip08c = naip.filterDate('2008-01-01', '2008-12-31');
+var naip10c = naip.filterDate('2010-01-01', '2010-12-31');
 
 
 
-var ndvi = naip17.normalizedDifference(['N', 'R']);
+
+var naip05 = naip05c.median().byte();
+var naip08 = naip08c.median().byte();
+var naip10 = naip10c.median().byte();
+
+
+
+var ndvi10 = naip10.normalizedDifference(['N', 'R']);
 var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
-var naip17Gauss53 = naip17.convolve(gauss53);
-var naip18Gauss53 = naip18.convolve(gauss53);
+var naip10Gauss53 = naip10.convolve(gauss53);
+var naip08Gauss53 = naip08.convolve(gauss53);
+var heightGauss53 = height.convolve(gauss53);
 var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
-var naip17Gauss104 = naip17.convolve(gauss104);
-var naip18Gauss104 = naip18.convolve(gauss104);
+var naip10Gauss104 = naip10.convolve(gauss104);
+var naip08Gauss104 = naip08.convolve(gauss104);
 var win10 = ee.Kernel.square({radius: 10});
-var entro10 = naip17.select('N').entropy(win10);
+var entro10 = naip10.select('N').entropy(win10);
 var win5 = ee.Kernel.square({radius: 5});
-var entro5 = naip17.select('N').entropy(win5);
-var nir17glcm3 = naip17.select(['N']).glcmTexture({size: 3, average: false});
-var contrast3 = nir17glcm3.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
-var nir17glcm7 = naip17.select(['N']).glcmTexture({size: 7, average: false});
-var contrast7 = nir17glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var entro5 = naip10.select('N').entropy(win5);
+var nir10glcm3 = naip10.select(['N']).glcmTexture({size: 3, average: false});
+var contrast3 = nir10glcm3.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var nir10glcm7 = naip10.select(['N']).glcmTexture({size: 7, average: false});
+var contrast7 = nir10glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
+var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip17, naip18, ndvi, naip17Gauss53, naip17Gauss104, naip18Gauss104, entro10, entro5, contrast3, contrast7, wb, wl]);
+// var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, entro10, entro5, contrast7, contrast14, wl, wb, height, heightGauss104]);
+var image = ee.Image.cat([naip08, naip10, entro5, contrast7, wl, wb, heightGauss53]);
+//var image = ee.Image.cat([naip10, contrast3, height, heightGauss104, wb, wl]);
+
+// // var training = image.sampleRegions({
+// //   collection: trainingData,
+// //   properties: [classProperty],
+// //   scale: 1
+// // });
 
 
 
-var trainingFull = image.sampleRegions({
-  collection: pts,
-  properties: [classProperty],
-  scale: 1
-});
-print(trainingFull.size());
 
-trainingFull = trainingFull.randomColumn();
-var training = trainingFull.filter(ee.Filter.lt('random', 0.9));
-var testing = trainingFull.filter(ee.Filter.gte('random', 0.9));
+var trainingGrass = image.sampleRegions({collection: grass, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.02));
+print(trainingGrass.size());
+
+var trainingImpervious = image.sampleRegions({collection: impervious, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.026));
+print(trainingImpervious.size());
+
+var trainingSoil = image.sampleRegions({collection: soil, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.002));
+print(trainingSoil.size());
+
+var trainingTree = image.sampleRegions({collection: tree, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.045));
+print(trainingTree.size());
+
+var trainingWater = image.sampleRegions({collection: water, properties: [classProperty], scale: 1}).randomColumn().filter(ee.Filter.lt('random', 0.01));
+print(trainingWater.size());
+
+
+var trainingPts = image.sampleRegions({collection: pts, properties: [classProperty], scale: 1}); //.randomColumn().filter(ee.Filter.lt('random', 0.));
+
+var training = trainingPts.merge(trainingGrass).merge(trainingTree).merge(trainingSoil).merge(trainingImpervious).merge(trainingWater);
 print(training.size());
-print(testing.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(200).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(20).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
 });
 
-// print(trainedClassifier);
+print(trainedClassifier);
 
+var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
 
-var testingClassified = testing.classify(trainedClassifier);
-var testAccuracy = testingClassified.errorMatrix('class_2017', 'classification');
-print('Testing error matrix: ', testAccuracy);
-print('Testing overall accuracy: ', testAccuracy.accuracy());
+var testClassified = testing.classify(trainedClassifier);
+var testAccuracy = testClassified.errorMatrix(classProperty, 'classification');
+print('testing error matrix: ', testAccuracy);
+print('testing overall accuracy: ', testAccuracy.accuracy());
 
-
-var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
-var validationClassified = validation.classify(trainedClassifier);
-var validationAccuracy = validationClassified.errorMatrix('class_2017', 'classification');
-print('Validation error matrix: ', validationAccuracy);
-print('Validation overall accuracy: ', validationAccuracy.accuracy());
+var valpts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_validation').filter(ee.Filter.neq(classProperty, '')).remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
+var valClassified = validation.classify(trainedClassifier);
+var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
+print('validation error matrix: ', valAccuracy);
+print('validation overall accuracy: ', valAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
-print(classified);
 
 
 
-// Map.centerObject(pts, 24);
-Map.addLayer(naip17);
-//Map.addLayer(naip18);
+Map.addLayer(naip05);
+Map.addLayer(naip08);
+Map.addLayer(naip10);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
+//Map.addLayer(errors);
 
 
 
 
 Export.image.toDrive({
   image: classified,
-  description: 'marathon2017-fullcounty',
+  description: 'milwaukee-2010-fullcounty',
   scale: 1,
   maxPixels: 12000000000,
-  region: marathonExport,
-  crs: 'EPSG:3070',
+  region: milwaukeeExport,
+  crs: 'EPSG:26916'
 });
 
 
 Export.image.toAsset({
   image: classified,
-  description: 'marathonClassified2017',
-  assetId: 'marathonClassified2017',
+  description: 'milwaukeeClassified2010',
+  assetId: 'milwaukeeClassified2010',
   scale: 1,
   maxPixels: 12000000000,
-  region: marathonExport,
+  region: milwaukeeExport,
   pyramidingPolicy: {
     'classification': 'mode'
   }
