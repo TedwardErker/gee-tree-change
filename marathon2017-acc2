@@ -1208,7 +1208,7 @@ var training = image.sampleRegions({
 });
 print(training.size());
 
-var trainedClassifier = ee.Classifier.smileRandomForest(300).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
