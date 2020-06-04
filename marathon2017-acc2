@@ -1223,12 +1223,12 @@ var testAccuracy = testingClassified.errorMatrix('class_2017', 'classification')
 print('Testing error matrix: ', testAccuracy);
 print('Testing overall accuracy: ', testAccuracy.accuracy());
 
-// var valpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_validation').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
-// var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
-// var valClassified = validation.classify(trainedClassifier);
-// var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
-// print('Validation error matrix: ', valAccuracy);
-// print('Validation overall accuracy: ', valAccuracy.accuracy());
+var valpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_validation').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
+var valClassified = validation.classify(trainedClassifier);
+var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
+print('Validation error matrix: ', valAccuracy);
+print('Validation overall accuracy: ', valAccuracy.accuracy());
 
 
 
@@ -1246,24 +1246,24 @@ Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','gr
 
 
 
-// Export.image.toDrive({
-//   image: classified,
-//   description: 'marathon2017-fullcounty',
-//   scale: 1,
-//   maxPixels: 12000000000,
-//   region: marathonExport,
-//   crs: 'EPSG:3070',
-// });
+Export.image.toDrive({
+  image: classified,
+  description: 'marathon2017-fullcounty',
+  scale: 1,
+  maxPixels: 12000000000,
+  region: marathonExport,
+  crs: 'EPSG:3070',
+});
 
 
-// Export.image.toAsset({
-//   image: classified,
-//   description: 'marathonClassified2017',
-//   assetId: 'marathonClassified2017',
-//   scale: 1,
-//   maxPixels: 12000000000,
-//   region: marathonExport,
-//   pyramidingPolicy: {
-//     'classification': 'mode'
-//   }
-// });
+Export.image.toAsset({
+  image: classified,
+  description: 'marathonClassified2017',
+  assetId: 'marathonClassified2017',
+  scale: 1,
+  maxPixels: 12000000000,
+  region: marathonExport,
+  pyramidingPolicy: {
+    'classification': 'mode'
+  }
+});
