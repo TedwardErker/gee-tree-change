@@ -405,25 +405,20 @@ var heightshift = height.convolve(shift);
 
 // classify with height
 
-var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104, heightshift]);
+// var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104, heightshift]);
+var image = ee.Image.cat([naip13, naip15, wl, wb, height, heightGauss104]);
 
 
 
-var trainingFull = image.sampleRegions({
+var training = image.sampleRegions({
   collection: trainingData,
   properties: [classProperty],
   scale: 1
 });
-print(trainingFull.size());
-
-trainingFull = trainingFull.randomColumn();
-var split = 0.75;
-var training = trainingFull.filter(ee.Filter.lt('random', split));
 print(training.size());
-var testing = trainingFull.filter(ee.Filter.gte('random', 0.999));
-print(testing.size());
 
-var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
+
+var trainedClassifier = ee.Classifier.smileRandomForest(10).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
@@ -437,56 +432,50 @@ var testAccuracy = testingClassified.errorMatrix(classProperty, 'classification'
 print('Testing error matrix: ', testAccuracy);
 print('Testing overall accuracy: ', testAccuracy.accuracy());
 
-var valpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_validation').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
-var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
-var valClassified = validation.classify(trainedClassifier);
-var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
-print('Validation error matrix: ', valAccuracy);
-print('Validation overall accuracy: ', valAccuracy.accuracy());
+// var valpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_validation').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+// var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
+// var valClassified = validation.classify(trainedClassifier);
+// var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
+// print('Validation error matrix: ', valAccuracy);
+// print('Validation overall accuracy: ', valAccuracy.accuracy());
 
 var classifiedHeight = image.classify(trainedClassifier);
 
 
-// // classify without height
+// classify without height
 
-// var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
-// var training = imageNoHeight.sampleRegions({
-//   collection: trainingData,
-//   properties: [classProperty],
-//   scale: 1
-// });
-
-
-// training = training.randomColumn();
-// var split = 0.75;
-// var trainingsub = training.filter(ee.Filter.lt('random', split));
-// print(trainingsub.size());
+var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
+var training = imageNoHeight.sampleRegions({
+  collection: trainingData,
+  properties: [classProperty],
+  scale: 1
+});
 
 
-// var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
-//   features: trainingsub,
-//   classProperty: classProperty,
-//   inputProperties: imageNoHeight.bandNames()
-// });
+training = training.randomColumn();
+var split = 0.75;
+var trainingsub = training.filter(ee.Filter.lt('random', split));
+print(trainingsub.size());
 
 
-// var classifiedNoHeight = imageNoHeight.classify(trainedClassifier);
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
+  features: trainingsub,
+  classProperty: classProperty,
+  inputProperties: imageNoHeight.bandNames()
+});
 
-// var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
-// var classified = classified.mosaic();
+
+var classifiedNoHeight = imageNoHeight.classify(trainedClassifier);
+
+var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
+var classified = classified.mosaic();
 
 Map.addLayer(height);
-Map.addLayer(heightshift);
+// Map.addLayer(heightshift);
 Map.addLayer(naip13);
 Map.addLayer(naip15);
-Map.addLayer(classifiedHeight, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
-
-// Export.image.toDrive({
-//   image: classified,
-//   description: 'marathon-2013',
-//   scale: 1,
-// });
 
 
 Export.image.toDrive({
