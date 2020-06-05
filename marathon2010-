@@ -303,7 +303,7 @@ var classProperty = 'class_2010';
 var pts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_training').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
 
 var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
-print(trainingData.size());
+// print(trainingData.size());
 
 var buf3000 = function(feature) {return feature.buffer(3000)};
 var urbanregion = testpts.map(buf3000);
@@ -382,25 +382,25 @@ Map.addLayer(naip10);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
 
-Export.image.toDrive({
-  image: classified,
-  description: 'marathon-2010-fullcounty',
-  scale: 1,
-  region: marathonExport,
-  maxPixels: 12000000000,
-  crs: 'EPSG:3070'
-});
+// Export.image.toDrive({
+//   image: classified,
+//   description: 'marathon-2010-fullcounty',
+//   scale: 1,
+//   region: marathonExport,
+//   maxPixels: 12000000000,
+//   crs: 'EPSG:3070'
+// });
 
 
-Export.image.toAsset({
-  image: classified,
-  description: 'marathonClassified2010',
-  assetId: 'marathonClassified2010',
-  scale: 1,
-  maxPixels: 12000000000,
-  region: marathonExport,
-  pyramidingPolicy: {
-    'classification': 'mode'
-  }
-});
+// Export.image.toAsset({
+//   image: classified,
+//   description: 'marathonClassified2010',
+//   assetId: 'marathonClassified2010',
+//   scale: 1,
+//   maxPixels: 12000000000,
+//   region: marathonExport,
+//   pyramidingPolicy: {
+//     'classification': 'mode'
+//   }
+// });
 
