@@ -455,31 +455,31 @@ var classifiedHeight = image.classify(trainedClassifier);
 
 // classify without height
 
-var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
-var training = imageNoHeight.sampleRegions({
-  collection: trainingData,
-  properties: [classProperty],
-  scale: 1
-});
+// var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
+// var training = imageNoHeight.sampleRegions({
+//   collection: trainingData,
+//   properties: [classProperty],
+//   scale: 1
+// });
 
 
-training = training.randomColumn();
-var split = 0.75;
-var trainingsub = training.filter(ee.Filter.lt('random', split));
-print(trainingsub.size());
+// training = training.randomColumn();
+// var split = 0.75;
+// var trainingsub = training.filter(ee.Filter.lt('random', split));
+// print(trainingsub.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
-  features: trainingsub,
-  classProperty: classProperty,
-  inputProperties: imageNoHeight.bandNames()
-});
+// var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
+//   features: trainingsub,
+//   classProperty: classProperty,
+//   inputProperties: imageNoHeight.bandNames()
+// });
 
 
-var classifiedNoHeight = imageNoHeight.classify(trainedClassifier);
+// var classifiedNoHeight = imageNoHeight.classify(trainedClassifier);
 
-var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
-var classified = classified.mosaic();
+// var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
+// var classified = classified.mosaic();
 
 Map.addLayer(height);
 Map.addLayer(heightshift);
