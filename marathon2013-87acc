@@ -362,6 +362,7 @@ var wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
 var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_50k');
 var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2013');
 
+var classProperty = 'class_2013';
 
 var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
@@ -410,7 +411,6 @@ var heightshift = height.convolve(shift);
 
 var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104, heightshift]);
 
-var classProperty = 'class_2013';
 
 
 var trainingFull = image.sampleRegions({
