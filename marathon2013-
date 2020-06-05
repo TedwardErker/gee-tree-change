@@ -1,4 +1,3 @@
-/**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
     wl = ee.Image("users/erker/UTC/marathon_water/water_lines"),
     height = ee.Image("users/erker/UTC/marathonHeight/marathon2012Height"),
@@ -358,7 +357,8 @@ var wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
           [-89.13203932052281, 44.6950200611524],
           [-89.13478590255406, 44.979374249676255],
           [-89.50557447677281, 44.996857015658165]]]);
-/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+
 var classProperty = 'class_2013';
 
 
