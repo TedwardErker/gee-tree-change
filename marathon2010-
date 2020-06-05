@@ -303,10 +303,10 @@ var classProperty = 'class_2010';
 var pts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_training').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
 
 var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
-// print(trainingData.size());
+// // print(trainingData.size());
 
 var buf3000 = function(feature) {return feature.buffer(3000)};
-var urbanregion = testpts.map(buf3000);
+var urbanregion = pts.map(buf3000);
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion); 
 var naip05c = naip.filterDate('2005-01-01', '2005-12-31');
 var naip08c = naip.filterDate('2008-01-01', '2008-12-31');
@@ -338,7 +338,6 @@ var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
 // var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
-var image = ee.Image.cat([naip05, naip08, naip10, naip10Gauss53, naip10Gauss104, entro5, contrast3, wl, wb]);
 var image = ee.Image.cat([naip05, naip08, naip10, naip10Gauss53, entro10, entro5, contrast3, contrast7, wl, wb]);
 
 
@@ -364,12 +363,12 @@ var testAccuracy = testingClassified.errorMatrix(classProperty, 'classification'
 print('Testing error matrix: ', testAccuracy);
 print('Testing overall accuracy: ', testAccuracy.accuracy());
 
-// var valpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_validation').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
-// var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
-// var valClassified = validation.classify(trainedClassifier);
-// var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
-// print('Validation error matrix: ', valAccuracy);
-// print('Validation overall accuracy: ', valAccuracy.accuracy());
+// // var valpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_validation').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+// // var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
+// // var valClassified = validation.classify(trainedClassifier);
+// // var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
+// // print('Validation error matrix: ', valAccuracy);
+// // print('Validation overall accuracy: ', valAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
@@ -382,25 +381,25 @@ Map.addLayer(naip10);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
 
 
-// Export.image.toDrive({
-//   image: classified,
-//   description: 'marathon-2010-fullcounty',
-//   scale: 1,
-//   region: marathonExport,
-//   maxPixels: 12000000000,
-//   crs: 'EPSG:3070'
-// });
+// // Export.image.toDrive({
+// //   image: classified,
+// //   description: 'marathon-2010-fullcounty',
+// //   scale: 1,
+// //   region: marathonExport,
+// //   maxPixels: 12000000000,
+// //   crs: 'EPSG:3070'
+// // });
 
 
-// Export.image.toAsset({
-//   image: classified,
-//   description: 'marathonClassified2010',
-//   assetId: 'marathonClassified2010',
-//   scale: 1,
-//   maxPixels: 12000000000,
-//   region: marathonExport,
-//   pyramidingPolicy: {
-//     'classification': 'mode'
-//   }
-// });
+// // Export.image.toAsset({
+// //   image: classified,
+// //   description: 'marathonClassified2010',
+// //   assetId: 'marathonClassified2010',
+// //   scale: 1,
+// //   maxPixels: 12000000000,
+// //   region: marathonExport,
+// //   pyramidingPolicy: {
+// //     'classification': 'mode'
+// //   }
+// // });
 
