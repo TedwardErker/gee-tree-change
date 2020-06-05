@@ -336,7 +336,10 @@ var wb = ee.Image("users/erker/UTC/marathon_water/water_bodies"),
           "system:index": "0"
         }),
     table = ee.FeatureCollection("users/erker/UTC/marathon_shapefiles/marathon-county"),
-    marathonExport = /* color: #d6d6d6 */ee.Geometry.Polygon(
+    marathonExport = 
+    /* color: #d6d6d6 */
+    /* shown: false */
+    ee.Geometry.Polygon(
         [[[-89.51381422286656, 45.17235954378038],
           [-89.80769850021031, 45.164613914682704],
           [-89.81456495528843, 45.06382488709884],
@@ -409,7 +412,6 @@ var heightshift = height.convolve(shift);
 var image = ee.Image.cat([naip13, naip15, wl, wb, height, heightGauss104]);
 
 
-
 var training = image.sampleRegions({
   collection: trainingData,
   properties: [classProperty],
@@ -451,15 +453,8 @@ var training = imageNoHeight.sampleRegions({
   scale: 1
 });
 
-
-training = training.randomColumn();
-var split = 0.75;
-var trainingsub = training.filter(ee.Filter.lt('random', split));
-print(trainingsub.size());
-
-
 var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
-  features: trainingsub,
+  features: training,
   classProperty: classProperty,
   inputProperties: imageNoHeight.bandNames()
 });
@@ -471,7 +466,6 @@ var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
 var classified = classified.mosaic();
 
 Map.addLayer(height);
-// Map.addLayer(heightshift);
 Map.addLayer(naip13);
 Map.addLayer(naip15);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
