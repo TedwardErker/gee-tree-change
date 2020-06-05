@@ -133,7 +133,29 @@ var grass = /* color: #dee61c */ee.Feature(
              [-87.87473103028222, 42.90804999487346],
              [-87.87496974688455, 42.90801266790636],
              [-87.87500193339272, 42.907973376337665],
-             [-87.87503948431893, 42.90791443893764]]),
+             [-87.87503948431893, 42.90791443893764],
+             [-88.06052243657884, 43.00791511622884],
+             [-88.06171333738146, 43.007161937555686],
+             [-88.05957568158104, 43.007068381758216],
+             [-88.05955422390892, 43.0071389927587],
+             [-88.05944693554832, 43.00712330143226],
+             [-88.06564739867933, 43.006391195362134],
+             [-88.06554011031874, 43.00684820904929],
+             [-88.06538722440489, 43.00694039594744],
+             [-88.06562594100721, 43.00636961952467],
+             [-88.06537649556883, 43.0069070517662],
+             [-88.0647059433151, 43.00698354721395],
+             [-88.06485078260191, 43.006910974612],
+             [-88.0649741642166, 43.00689920607389],
+             [-88.06471130773313, 43.00707769532657],
+             [-88.06470862552412, 43.007052196893625],
+             [-88.06354722902067, 43.007007084255605],
+             [-88.06316635534056, 43.00695216447771],
+             [-88.06217125579603, 43.00727579817558],
+             [-88.07223100785716, 43.00295148921092],
+             [-88.07290692452891, 43.002873027190496],
+             [-88.06892652635081, 43.00291225821324],
+             [-88.06936640862925, 43.00279456506989]]),
         {
           "class_2017": 0,
           "system:index": "0"
@@ -521,7 +543,8 @@ var grass = /* color: #dee61c */ee.Feature(
              [-87.9926197168378, 42.88816373618082],
              [-87.95838379448777, 42.90937451487048],
              [-87.95799755638963, 42.908989464924495],
-             [-87.93372175220357, 42.91039980565855]]),
+             [-87.93372175220357, 42.91039980565855],
+             [-88.0610930345828, 43.0083702621396]]),
         {
           "class_2017": 4,
           "system:index": "0"
@@ -630,21 +653,21 @@ print('testing error matrix: ', testAccuracy);
 print('testing overall accuracy: ', testAccuracy.accuracy());
 
 
-var valpts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_validation').filter(ee.Filter.neq(classProperty, '')).remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
-var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
-var valClassified = validation.classify(trainedClassifier);
-var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
-print('validation error matrix: ', valAccuracy);
-print('validation overall accuracy: ', valAccuracy.accuracy());
+// var valpts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_validation').filter(ee.Filter.neq(classProperty, '')).remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+// var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
+// var valClassified = validation.classify(trainedClassifier);
+// var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
+// print('validation error matrix: ', valAccuracy);
+// print('validation overall accuracy: ', valAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
 
-Map.addLayer(height);
+// Map.addLayer(height);
 Map.addLayer(naip18);
 Map.addLayer(naip17);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
-Map.addLayer(treeRemoved);
+// Map.addLayer(treeRemoved);
 
 
 
