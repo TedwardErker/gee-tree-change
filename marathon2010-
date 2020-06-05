@@ -98,9 +98,8 @@ var contrast7 = nir10glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_cont
 var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
-var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
-
-
+// var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
+var image = ee.Image.cat([naip05, naip08, naip10, naip10Gauss53, naip10Gauss104, entro5, contrast3, wl, wb]);
 
 
 var training = image.sampleRegions({
