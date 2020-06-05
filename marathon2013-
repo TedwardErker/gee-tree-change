@@ -1,0 +1,152 @@
+var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_50k');
+var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2013');
+
+var classProperty = 'class_2013';
+
+var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
+
+
+var testpts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_accuracy_randompoints_20200522').filter(ee.Filter.neq('class_2013', '')).remap(['G','I','S','T','W'], [0,1,2,3,4], 'class_2013');
+
+var buf = function(feature) {return feature.buffer(4000)};
+var urbanregion = testpts.map(buf);
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion); 
+var naip13c = naip.filterDate('2013-01-01', '2013-12-31');
+var naip15c = naip.filterDate('2015-01-01', '2015-12-31');
+
+
+var naip13 = naip13c.median().byte();
+var naip15 = naip15c.median().byte();
+
+
+var ndvi13 = naip13.normalizedDifference(['N', 'R']);
+var gauss53 = ee.Kernel.gaussian({radius: 5, sigma: 3, units: 'pixels', normalize:true});
+var naip13Gauss53 = naip13.convolve(gauss53);
+var naip15Gauss53 = naip15.convolve(gauss53);
+var gauss104 = ee.Kernel.gaussian({radius: 10, sigma: 4, units: 'pixels', normalize:true});
+var naip13Gauss104 = naip13.convolve(gauss104);
+var naip15Gauss104 = naip15.convolve(gauss104);
+var heightGauss104 = height.convolve(gauss104);
+var win10 = ee.Kernel.square({radius: 10});
+var entro10 = naip13.select('N').entropy(win10);
+var win5 = ee.Kernel.square({radius: 5});
+var entro5 = naip13.select('N').entropy(win5);
+var nir13glcm3 = naip13.select(['N']).glcmTexture({size: 3, average: false});
+var contrast3 = nir13glcm3.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var nir13glcm7 = naip13.select(['N']).glcmTexture({size: 7, average: false});
+var contrast7 = nir13glcm7.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+var nir13glcm14 = naip13.select(['N']).glcmTexture({size: 14, average: false});
+var contrast14 = nir13glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
+
+
+// Create a list of weights for a 9x9 kernel.
+var bottomList = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
+var list =       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var lists = [list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, bottomList];
+var shift = ee.Kernel.fixed(25, 25, lists, -12, -12, false);
+var heightshift = height.convolve(shift);
+
+// classify with height
+
+var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104, heightshift]);
+
+
+
+var trainingFull = image.sampleRegions({
+  collection: trainingData,
+  properties: [classProperty],
+  scale: 1
+});
+print(trainingFull.size());
+
+trainingFull = trainingFull.randomColumn();
+var split = 0.75;
+var training = trainingFull.filter(ee.Filter.lt('random', split));
+print(training.size());
+var testing = trainingFull.filter(ee.Filter.gte('random', 0.999));
+print(testing.size());
+
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
+  features: training,
+  classProperty: classProperty,
+  inputProperties: image.bandNames()
+});
+// for some reason I cannot figure out this gives a memory limit exceeded error.
+// var testClassified = testing.classify(trainedClassifier);
+// print(testClassified);
+// var testAccuracy = testClassified.errorMatrix('class_2013', 'classification');
+// print('Testing error matrix: ', testAccuracy);
+// print('Testing overall accuracy: ', testAccuracy.accuracy());
+
+var validation = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
+var validationClassified = validation.classify(trainedClassifier);
+print(validationClassified);
+var validationAccuracy = validationClassified.errorMatrix(classProperty, 'classification');
+print('Validation error matrix: ', validationAccuracy);
+print('Validation overall accuracy: ', validationAccuracy.accuracy());
+
+
+var classifiedHeight = image.classify(trainedClassifier);
+
+
+// classify without height
+
+var imageNoHeight = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
+var training = imageNoHeight.sampleRegions({
+  collection: trainingData,
+  properties: [classProperty],
+  scale: 1
+});
+
+
+training = training.randomColumn();
+var split = 0.75;
+var trainingsub = training.filter(ee.Filter.lt('random', split));
+print(trainingsub.size());
+
+
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
+  features: trainingsub,
+  classProperty: classProperty,
+  inputProperties: imageNoHeight.bandNames()
+});
+
+
+var classifiedNoHeight = imageNoHeight.classify(trainedClassifier);
+
+var classified = ee.ImageCollection([classifiedNoHeight, classifiedHeight]);
+var classified = classified.mosaic();
+
+Map.addLayer(height);
+Map.addLayer(heightshift);
+Map.addLayer(naip13);
+Map.addLayer(naip15);
+Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+
+
+// Export.image.toDrive({
+//   image: classified,
+//   description: 'marathon-2013',
+//   scale: 1,
+// });
+
+
+Export.image.toDrive({
+  image: classified,
+  description: 'marathon-2013-fullcounty',
+  scale: 1,
+  maxPixels: 12000000000,
+  crs: 'EPSG:3070',
+  region: marathonExport
+});
+
+Export.image.toAsset({
+  image: classified,
+  description: 'marathonClassified2013',
+  assetId: 'marathonClassified2013',
+  scale: 1,
+  region: marathonExport,
+  pyramidingPolicy: {
+    'classification': 'mode'
+  }
+});
