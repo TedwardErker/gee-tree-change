@@ -5617,8 +5617,9 @@ var grass = /* color: #ebea4c */ee.Feature(
           [-89.13478590255406, 44.979374249676255],
           [-89.50557447677281, 44.996857015658165]]]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-var pts = ee.FeatureCollection('users/erker/UTC/marathon_shapefiles/marathon_combined_sub_50k');
-var pts = pts.remap([1,2,3,4,5], [0,1,2,3,4], 'class_2010');
+var classProperty = 'class_2010';
+
+var pts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_training').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
 
 var trainingData = pts.merge(grass).merge(tree).merge(soil).merge(impervious).merge(water);
 
@@ -5630,8 +5631,6 @@ var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(urbanregion);
 var naip05c = naip.filterDate('2005-01-01', '2005-12-31');
 var naip08c = naip.filterDate('2008-01-01', '2008-12-31');
 var naip10c = naip.filterDate('2010-01-01', '2010-12-31');
-
-
 
 
 var naip05 = naip05c.median().byte();
@@ -5661,7 +5660,6 @@ var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_co
 var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, naip10Gauss104, naip08Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb]);
 
 
-var classProperty = 'class_2010';
 
 
 var training = image.sampleRegions({
@@ -5672,7 +5670,7 @@ var training = image.sampleRegions({
 
 training = training.randomColumn();
 
-var split = 0.5;
+var split = 0.2;
 var training = training.filter(ee.Filter.lt('random', split));
 print(training.size());
 
@@ -5684,12 +5682,19 @@ var trainedClassifier = ee.Classifier.smileRandomForest(100).train({
 });
 
 // print(trainedClassifier);
-
+var testpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_testing').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
 var testing = image.sampleRegions({collection: testpts, properties: [classProperty], scale: 1});
-var testClassified = testing.classify(trainedClassifier);
-var testAccuracy = testClassified.errorMatrix('class_2010', 'classification');
-print('Validation error matrix: ', testAccuracy);
-print('Validation overall accuracy: ', testAccuracy.accuracy());
+var testingClassified = testing.classify(trainedClassifier);
+var testAccuracy = testingClassified.errorMatrix(classProperty, 'classification');
+print('Testing error matrix: ', testAccuracy);
+print('Testing overall accuracy: ', testAccuracy.accuracy());
+
+// var valpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_validation').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+// var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
+// var valClassified = validation.classify(trainedClassifier);
+// var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
+// print('Validation error matrix: ', valAccuracy);
+// print('Validation overall accuracy: ', valAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
@@ -5700,14 +5705,6 @@ Map.addLayer(naip05);
 Map.addLayer(naip08);
 Map.addLayer(naip10);
 Map.addLayer(classified, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
-
-
-
-// Export.image.toDrive({
-//   image: classified,
-//   description: 'marathon-2010-5',
-//   scale: 1,
-// });
 
 
 Export.image.toDrive({
