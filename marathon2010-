@@ -1,5 +1,8 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var marathonExport = /* color: #d6d6d6 */ee.Geometry.Polygon(
+var marathonExport = 
+    /* color: #d6d6d6 */
+    /* shown: false */
+    ee.Geometry.Polygon(
         [[[-89.51381422286656, 45.17235954378038],
           [-89.80769850021031, 45.164613914682704],
           [-89.81456495528843, 45.06382488709884],
@@ -20,10 +23,40 @@ var marathonExport = /* color: #d6d6d6 */ee.Geometry.Polygon(
           [-89.79671217208531, 44.69111505555379],
           [-89.13203932052281, 44.6950200611524],
           [-89.13478590255406, 44.979374249676255],
-          [-89.50557447677281, 44.996857015658165]]]);
+          [-89.50557447677281, 44.996857015658165]]]),
+    grass = /* color: #d6d536 */ee.Feature(
+        ee.Geometry.MultiPoint(),
+        {
+          "class_2010": 0,
+          "system:index": "0"
+        }),
+    impervious = /* color: #ff1f1f */ee.Feature(
+        ee.Geometry.MultiPoint(),
+        {
+          "class_2010": 1,
+          "system:index": "0"
+        }),
+    soil = /* color: #c09b5f */ee.Feature(
+        ee.Geometry.MultiPoint(),
+        {
+          "class_2010": 2,
+          "system:index": "0"
+        }),
+    tree = /* color: #40c660 */ee.Feature(
+        ee.Geometry.MultiPoint(),
+        {
+          "class_2010": 3,
+          "system:index": "0"
+        }),
+    water = /* color: #1b1dff */ee.Feature(
+        ee.Geometry.MultiPoint(),
+        {
+          "class_2010": 4,
+          "system:index": "0"
+        });
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-wl = ee.Image("users/erker/UTC/marathon_water/water_lines");
-wb = ee.Image("users/erker/UTC/marathon_water/water_bodies");
+var wl = ee.Image("users/erker/UTC/marathon_water/water_lines");
+var wb = ee.Image("users/erker/UTC/marathon_water/water_bodies");
 
 var classProperty = 'class_2010';
 
