@@ -400,15 +400,15 @@ var contrast14 = nir13glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_co
 
 
 // Create a list of weights for a 9x9 kernel.
-var bottomList = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
-var list =       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-var lists = [list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, bottomList];
-var shift = ee.Kernel.fixed(25, 25, lists, -12, -12, false);
-var heightshift = height.convolve(shift);
+// var bottomList = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
+// var list =       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+// var lists = [list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, list, bottomList];
+// var shift = ee.Kernel.fixed(25, 25, lists, -12, -12, false);
+// var heightshift = height.convolve(shift);
 
 // classify with height
 
-// var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104, heightshift]);
+// var image = ee.Image.cat([naip13, naip15, ndvi13, naip13Gauss53, naip13Gauss104, naip15Gauss104, entro10, entro5, contrast3, contrast7, contrast14, wl, wb, height, heightGauss104]);
 var image = ee.Image.cat([naip13, naip15, wl, wb, height, heightGauss104]);
 
 
@@ -420,7 +420,7 @@ var training = image.sampleRegions({
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(10).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(500).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
@@ -434,12 +434,12 @@ var testAccuracy = testingClassified.errorMatrix(classProperty, 'classification'
 print('Testing error matrix: ', testAccuracy);
 print('Testing overall accuracy: ', testAccuracy.accuracy());
 
-// var valpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_validation').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
-// var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
-// var valClassified = validation.classify(trainedClassifier);
-// var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
-// print('Validation error matrix: ', valAccuracy);
-// print('Validation overall accuracy: ', valAccuracy.accuracy());
+var valpts = ee.FeatureCollection('users/erkere/marathonShapefiles/marathon_accuracy_validation').remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
+var valClassified = validation.classify(trainedClassifier);
+var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
+print('Validation error matrix: ', valAccuracy);
+print('Validation overall accuracy: ', valAccuracy.accuracy());
 
 var classifiedHeight = image.classify(trainedClassifier);
 
@@ -486,6 +486,7 @@ Export.image.toAsset({
   description: 'marathonClassified2013',
   assetId: 'marathonClassified2013',
   scale: 1,
+  maxPixels: 12000000000,
   region: marathonExport,
   pyramidingPolicy: {
     'classification': 'mode'
