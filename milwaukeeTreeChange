@@ -53,11 +53,14 @@ var noTreeConstant = mke2010tree.eq(0).and(mke2017tree.eq(0)).select(['tree2010'
 var mke2010to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
 
 
-// Map.addLayer(naip10);
-// Map.addLayer(naip13);
-// Map.addLayer(naip17);
-// Map.addLayer(mke2010to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
-// Map.addLayer(mke2013to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
+Map.addLayer(naip10);
+Map.addLayer(naip13);
+Map.addLayer(naip17);
+Map.addLayer(mke2010to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
+Map.addLayer(mke2013to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
+
+
+
 
 //
 //                9x9 change
@@ -69,31 +72,56 @@ print(k9x9);
 //                       2013 to 2017
 var mke2013tree9x9 = mke2013tree.convolve(k9x9);
 var mke2017tree9x9 = mke2017tree.convolve(k9x9);
-var mke2013to2017_9x9 = mke2017tree9x9.subtract(mke2013tree9x9)
-print(mke2013tree9x9);
-Map.addLayer(mke2013tree);
-Map.addLayer(mke2013tree9x9);
+var mke2013to2017_9x9 = mke2017tree9x9.subtract(mke2013tree9x9);
 Map.addLayer(mke2013to2017_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
 
 
 //                       2010 to 2017
 var mke2010tree9x9 = mke2010tree.convolve(k9x9);
 var mke2017tree9x9 = mke2017tree.convolve(k9x9);
-var mke2010to2017_9x9 = mke2017tree9x9.subtract(mke2010tree9x9)
-print(mke2010tree9x9);
-Map.addLayer(mke2010tree);
-Map.addLayer(mke2010tree9x9);
+var mke2010to2017_9x9 = mke2017tree9x9.subtract(mke2010tree9x9);
 Map.addLayer(mke2010to2017_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
 
 //
 //               25x25 change
 // 
 
+var k25x25 = ee.Kernel.rectangle(12.5, 12.5, 'pixels', true);
+print(k25x25);
+
+//                       2013 to 2017
+var mke2013tree25x25 = mke2013tree.convolve(k25x25);
+var mke2017tree25x25 = mke2017tree.convolve(k25x25);
+var mke2013to2017_25x25 = mke2017tree25x25.subtract(mke2013tree25x25);
+Map.addLayer(mke2013to2017_25x25, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+
+
+//                       2010 to 2017
+var mke2010tree25x25 = mke2010tree.convolve(k25x25);
+var mke2017tree25x25 = mke2017tree.convolve(k25x25);
+var mke2010to2017_25x25 = mke2017tree25x25.subtract(mke2010tree25x25);
+Map.addLayer(mke2010to2017_25x25, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+
 
 //
 //               50x50 change
 // 
 
+var k50x50 = ee.Kernel.rectangle(25, 25, 'pixels', true);
+print(k50x50);
+
+//                       2013 to 2017
+var mke2013tree50x50 = mke2013tree.convolve(k50x50);
+var mke2017tree50x50 = mke2017tree.convolve(k50x50);
+var mke2013to2017_50x50 = mke2017tree50x50.subtract(mke2013tree50x50);
+Map.addLayer(mke2013to2017_50x50, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+
+
+//                       2010 to 2017
+var mke2010tree50x50 = mke2010tree.convolve(k50x50);
+var mke2017tree50x50 = mke2017tree.convolve(k50x50);
+var mke2010to2017_50x50 = mke2017tree50x50.subtract(mke2010tree50x50);
+Map.addLayer(mke2010to2017_50x50, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
 
 
 // Export:  Make sure I clip out the bad parts from lack of lidar.
