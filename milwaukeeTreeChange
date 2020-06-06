@@ -3,3 +3,12 @@ var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
     mke2017 = ee.Image("users/erkere/milwaukeeClassified2017-old");
     
 
+// convert to tree
+var mke2010tree = mke2010.expression(
+    'C == 3', {
+      'C': mke2010.select('B')
+});
+
+print(mke2010tree);
+
+Map.addLayer(mke2010tree);
