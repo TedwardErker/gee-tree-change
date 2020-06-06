@@ -1,0 +1,5 @@
+var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
+    mke2013 = ee.Image("users/erkere/milwaukeeClassified2013"),
+    mke2017 = ee.Image("users/erkere/milwaukeeClassified2017-old");
+    
+
