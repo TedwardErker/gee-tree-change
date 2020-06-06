@@ -3,24 +3,21 @@ var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
     mke2017 = ee.Image("users/erkere/milwaukeeClassified2017-old");
     
     
-print(mke2010);
-
 // convert to tree
-var mke2010tree = mke2010.eq(3);
-var mke2013tree = mke2017.eq(3);
-var mke2017tree = mke2017.eq(3);
-
-var treestack = ee.Image.cat([mke2010tree, mke2013tree, mke2017tree]);
-print(treestack);
+var mke2010tree = mke2010.eq(3).select(['classification'], ['tree2010']);
+var mke2013tree = mke2013.eq(3).select(['classification'], ['tree2013']);
+var mke2017tree = mke2017.eq(3).select(['classification'], ['tree2017']);
 
 // Pixel level change
 
 //             2013 to 2017
-var treeConstant = mke2013tree.eq(1).and(mke2017.eq(1));
-var treeLoss = mke2013tree.eq(1).and(mke2017.eq(0));
-var treeGain = mke2013tree.eq(0).and(mke2017.eq(1));
-var noTreeConstant = mke2013tree.eq(0).and(mke2017.eq(0));
+var treeConstant = mke2013tree.eq(1).and(mke2017tree.eq(1)).select(['tree2013'], ['treeConstant']).expression("b('treeConstant') * 4");
 print(treeConstant);
+var treeLoss = mke2013tree.eq(1).and(mke2017tree.eq(0)).select(['tree2013'], ['treeConstant']).expression("b('treeConstant') * 3");
+var treeGain = mke2013tree.eq(0).and(mke2017tree.eq(1)).select(['tree2013'], ['treeConstant']).expression("b('treeConstant') * 2");
+var noTreeConstant = mke2013tree.eq(0).and(mke2017tree.eq(0)).select(['tree2013'], ['treeConstant']);
+
+// mosaic not cat
 var mke2013to2017 = ee.Image.cat(treeConstant, treeLoss, treeGain, noTreeConstant);
 
 
@@ -33,13 +30,12 @@ var mke2013to2017 = ee.Image.cat(treeConstant, treeLoss, treeGain, noTreeConstan
 
 // print(mke2010to2017);
 
-print(mke2010tree);
 Map.addLayer(mke2010tree);
 Map.addLayer(mke2013tree);
 Map.addLayer(mke2017tree);
 // Map.addLayer(mke2013to2017);
 // Map.addLayer(treeLoss);
 // Map.addLayer(treeGain);
-// Map.addLayer(treeConstant);
+Map.addLayer(treeConstant);
 // Map.addLayer(noTreeConstant);
 
