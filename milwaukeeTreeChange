@@ -15,7 +15,7 @@ var treeConstant = mke2013tree.eq(1).and(mke2017tree.eq(1)).select(['tree2013'],
 print(treeConstant);
 var treeGain = mke2013tree.eq(0).and(mke2017tree.eq(1)).select(['tree2013'], ['treeGain']).expression("b('treeGain') * 3");
 var treeLoss = mke2013tree.eq(1).and(mke2017tree.eq(0)).select(['tree2013'], ['treeLoss']).expression("b('treeLoss') * 2");
-var noTreeConstant = mke2013tree.eq(0).and(mke2017tree.eq(0)).select(['tree2013'], ['treeConstant']);
+var noTreeConstant = mke2013tree.eq(0).and(mke2017tree.eq(0)).select(['tree2013'], ['noTreeConstant']);
 
 // mosaic not cat
 var mke2013to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
