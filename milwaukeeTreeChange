@@ -13,8 +13,8 @@ var mke2017tree = mke2017.eq(3).select(['classification'], ['tree2017']);
 //             2013 to 2017
 var treeConstant = mke2013tree.eq(1).and(mke2017tree.eq(1)).select(['tree2013'], ['treeConstant']).expression("b('treeConstant') * 4");
 print(treeConstant);
-var treeLoss = mke2013tree.eq(1).and(mke2017tree.eq(0)).select(['tree2013'], ['treeConstant']).expression("b('treeConstant') * 3");
-var treeGain = mke2013tree.eq(0).and(mke2017tree.eq(1)).select(['tree2013'], ['treeConstant']).expression("b('treeConstant') * 2");
+var treeGain = mke2013tree.eq(0).and(mke2017tree.eq(1)).select(['tree2013'], ['treeGain']).expression("b('treeGain') * 3");
+var treeLoss = mke2013tree.eq(1).and(mke2017tree.eq(0)).select(['tree2013'], ['treeLoss']).expression("b('treeLoss') * 2");
 var noTreeConstant = mke2013tree.eq(0).and(mke2017tree.eq(0)).select(['tree2013'], ['treeConstant']);
 
 // mosaic not cat
@@ -33,5 +33,5 @@ print(mke2013to2017);
 Map.addLayer(mke2010tree);
 Map.addLayer(mke2013tree);
 Map.addLayer(mke2017tree);
-Map.addLayer(mke2013to2017);
+Map.addLayer(mke2013to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
 
