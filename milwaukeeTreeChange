@@ -1,3 +1,6 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = /* color: #d63000 */ee.Geometry.MultiPoint();
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
 var milwaukeeExport = ee.Geometry.Polygon(
         [[[-88.35575750089527, 43.35209206347098],
           [-88.35575750089527, 42.80743795582355],
@@ -28,27 +31,74 @@ var mke2017tree = mke2017.eq(3).select(['classification'], ['tree2017']);
 
 
 
+//
+//      Pixel level change
+//
 
 
-
-
-
-// Pixel level change
-
-//             2013 to 2017
+//                       2013 to 2017
 var treeConstant = mke2013tree.eq(1).and(mke2017tree.eq(1)).select(['tree2013'], ['treeChangeCode']).expression("b('treeChangeCode') * 4");
 print(treeConstant);
 var treeGain = mke2013tree.eq(0).and(mke2017tree.eq(1)).select(['tree2013'], ['treeChangeCode']).expression("b('treeChangeCode') * 3");
 var treeLoss = mke2013tree.eq(1).and(mke2017tree.eq(0)).select(['tree2013'], ['treeChangeCode']).expression("b('treeChangeCode') * 2");
 var noTreeConstant = mke2013tree.eq(0).and(mke2017tree.eq(0)).select(['tree2013'], ['treeChangeCode']);
-
-// mosaic not cat
 var mke2013to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
-print(mke2013to2017);
+
+//                       2010 to 2017
+var treeConstant = mke2010tree.eq(1).and(mke2017tree.eq(1)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 4");
+print(treeConstant);
+var treeGain = mke2010tree.eq(0).and(mke2017tree.eq(1)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 3");
+var treeLoss = mke2010tree.eq(1).and(mke2017tree.eq(0)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 2");
+var noTreeConstant = mke2010tree.eq(0).and(mke2017tree.eq(0)).select(['tree2010'], ['treeChangeCode']);
+var mke2010to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
 
 
-Map.addLayer(naip10);
-Map.addLayer(naip13);
-Map.addLayer(naip17);
-Map.addLayer(mke2013to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
+// Map.addLayer(naip10);
+// Map.addLayer(naip13);
+// Map.addLayer(naip17);
+// Map.addLayer(mke2010to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
+// Map.addLayer(mke2013to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
+
+//
+//                9x9 change
+//
+
+var k9x9 = ee.Kernel.rectangle(4.5, 4.5, 'pixels', true);
+print(k9x9);
+
+//                       2013 to 2017
+var mke2013tree9x9 = mke2013tree.convolve(k9x9);
+var mke2017tree9x9 = mke2017tree.convolve(k9x9);
+var mke2013to2017_9x9 = mke2017tree9x9.subtract(mke2013tree9x9)
+print(mke2013tree9x9);
+Map.addLayer(mke2013tree);
+Map.addLayer(mke2013tree9x9);
+Map.addLayer(mke2013to2017_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+
+
+//                       2010 to 2017
+var mke2010tree9x9 = mke2010tree.convolve(k9x9);
+var mke2017tree9x9 = mke2017tree.convolve(k9x9);
+var mke2010to2017_9x9 = mke2017tree9x9.subtract(mke2010tree9x9)
+print(mke2010tree9x9);
+Map.addLayer(mke2010tree);
+Map.addLayer(mke2010tree9x9);
+Map.addLayer(mke2010to2017_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+
+//
+//               25x25 change
+// 
+
+
+//
+//               50x50 change
+// 
+
+
+
+// Export:  Make sure I clip out the bad parts from lack of lidar.
+
+// mke2010 to 2017 make
+
+
 
