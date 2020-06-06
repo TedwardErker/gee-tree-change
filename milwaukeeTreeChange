@@ -18,8 +18,8 @@ var treeGain = mke2013tree.eq(0).and(mke2017tree.eq(1)).select(['tree2013'], ['t
 var noTreeConstant = mke2013tree.eq(0).and(mke2017tree.eq(0)).select(['tree2013'], ['treeConstant']);
 
 // mosaic not cat
-var mke2013to2017 = ee.Image.cat(treeConstant, treeLoss, treeGain, noTreeConstant);
-
+var mke2013to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
+print(mke2013to2017);
 
 // Create a binary layer using logical operations.
 // var bare = ndvi.lt(0.2).and(ndwi.lt(0));
@@ -33,9 +33,5 @@ var mke2013to2017 = ee.Image.cat(treeConstant, treeLoss, treeGain, noTreeConstan
 Map.addLayer(mke2010tree);
 Map.addLayer(mke2013tree);
 Map.addLayer(mke2017tree);
-// Map.addLayer(mke2013to2017);
-// Map.addLayer(treeLoss);
-// Map.addLayer(treeGain);
-Map.addLayer(treeConstant);
-// Map.addLayer(noTreeConstant);
+Map.addLayer(mke2013to2017);
 
