@@ -1,7 +1,8 @@
-
-
-
-
+var milwaukeeExport = ee.Geometry.Polygon(
+        [[[-88.35575750089527, 43.35209206347098],
+          [-88.35575750089527, 42.80743795582355],
+          [-87.76249578214527, 42.80743795582355],
+          [-87.76249578214527, 43.35209206347098]]], null, false);
 
 var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
     mke2013 = ee.Image("users/erkere/milwaukeeClassified2013"),
@@ -9,7 +10,7 @@ var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
     
       
   
-var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(mke2010);
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(milwaukeeExport);
 var naip05 = naip.filterDate('2005-01-01', '2005-12-31').median().byte();
 var naip08 = naip.filterDate('2008-01-01', '2008-12-31').median().byte();
 var naip10 = naip.filterDate('2010-01-01', '2010-12-31').median().byte();
@@ -25,6 +26,13 @@ var mke2010tree = mke2010.eq(3).select(['classification'], ['tree2010']);
 var mke2013tree = mke2013.eq(3).select(['classification'], ['tree2013']);
 var mke2017tree = mke2017.eq(3).select(['classification'], ['tree2017']);
 
+
+
+
+
+
+
+
 // Pixel level change
 
 //             2013 to 2017
@@ -38,14 +46,7 @@ var noTreeConstant = mke2013tree.eq(0).and(mke2017tree.eq(0)).select(['tree2013'
 var mke2013to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
 print(mke2013to2017);
 
-// Create a binary layer using logical operations.
-// var bare = ndvi.lt(0.2).and(ndwi.lt(0));
 
-// Mask and display the binary layer.
-
-//var mke2010to2017 =  treestack.expression('')
-
-// print(mke2010to2017);
 Map.addLayer(naip10);
 Map.addLayer(naip13);
 Map.addLayer(naip17);
