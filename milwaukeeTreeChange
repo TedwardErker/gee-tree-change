@@ -6,22 +6,40 @@ var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
 print(mke2010);
 
 // convert to tree
-var mke2010tree = mke2010.expression('C == 3', {'C': mke2010.select('classification')});
-var mke2013tree = mke2017.expression('C == 3', {'C': mke2013.select('classification')});
-var mke2017tree = mke2017.expression('C == 3', {'C': mke2017.select('classification')});
+var mke2010tree = mke2010.eq(3);
+var mke2013tree = mke2017.eq(3);
+var mke2017tree = mke2017.eq(3);
 
-var treestack = ee.Image
-
+var treestack = ee.Image.cat([mke2010tree, mke2013tree, mke2017tree]);
+print(treestack);
 
 // Pixel level change
 
 //             2013 to 2017
+var treeConstant = mke2013tree.eq(1).and(mke2017.eq(1));
+var treeLoss = mke2013tree.eq(1).and(mke2017.eq(0));
+var treeGain = mke2013tree.eq(0).and(mke2017.eq(1));
+var noTreeConstant = mke2013tree.eq(0).and(mke2017.eq(0));
+print(treeConstant);
+var mke2013to2017 = ee.Image.cat(treeConstant, treeLoss, treeGain, noTreeConstant);
 
-var mke2010to2017 = 
 
+// Create a binary layer using logical operations.
+// var bare = ndvi.lt(0.2).and(ndwi.lt(0));
 
+// Mask and display the binary layer.
+
+//var mke2010to2017 =  treestack.expression('')
+
+// print(mke2010to2017);
 
 print(mke2010tree);
-
-Map.addLayer(mke2010);
 Map.addLayer(mke2010tree);
+Map.addLayer(mke2013tree);
+Map.addLayer(mke2017tree);
+// Map.addLayer(mke2013to2017);
+// Map.addLayer(treeLoss);
+// Map.addLayer(treeGain);
+// Map.addLayer(treeConstant);
+// Map.addLayer(noTreeConstant);
+
