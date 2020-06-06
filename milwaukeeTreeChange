@@ -1,7 +1,24 @@
+
+
+
+
+
 var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
     mke2013 = ee.Image("users/erkere/milwaukeeClassified2013"),
     mke2017 = ee.Image("users/erkere/milwaukeeClassified2017-old");
     
+      
+    
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(mke2010);
+var naip05 = ip.filterDate('2017-01-01', '2017-12-31').median().byte();
+var naip08 = ip.filterDate('2017-01-01', '2017-12-31').median().byte();
+var naip10= naip.filterDate('2017-01-01', '2017-12-31').median().byte();
+var naip13= naip.filterDate('2017-01-01', '2017-12-31').median().byte();
+var naip15= naip.filterDate('2017-01-01', '2017-12-31').median().byte();
+var naip17 = naip.filterDate('2017-01-01', '2017-12-31').median().byte();
+var naip18 = naip.filterDate('2018-01-01', '2018-12-31').median().byte();
+
+
     
 // convert to tree
 var mke2010tree = mke2010.eq(3).select(['classification'], ['tree2010']);
