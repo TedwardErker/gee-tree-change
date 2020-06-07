@@ -519,7 +519,10 @@ var grass = /* color: #fcff29 */ee.Feature(
              [-87.9006352703009, 43.16755966974381],
              [-87.90064465803245, 43.16761738013855],
              [-87.95074873110806, 43.145127704324935],
-             [-87.95070849797284, 43.145164887385135]]),
+             [-87.95070849797284, 43.145164887385135],
+             [-88.05758762379145, 43.03041130353483],
+             [-88.0574159624145, 43.0303995395],
+             [-88.05772709866022, 43.03031326984237]]),
         {
           "class_2010": 1,
           "system:index": "0"
@@ -984,7 +987,7 @@ var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_co
 
 
 
-// height shift for wires
+// height shift for wires?
 
 
 
@@ -1006,7 +1009,7 @@ var training = trainingPts.merge(trainingGrass).merge(trainingTree).merge(traini
 print(training.size());
 
 
-var trainedClassifier = ee.Classifier.smileRandomForest(200).train({
+var trainedClassifier = ee.Classifier.smileRandomForest(600).train({
   features: training,
   classProperty: classProperty,
   inputProperties: image.bandNames()
