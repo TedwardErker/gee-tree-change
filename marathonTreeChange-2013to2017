@@ -1,4 +1,4 @@
-var marathonExport = 
+var marExport = 
     /* color: #ff0000 */
     /* shown: false */
     ee.Geometry.MultiPolygon(
@@ -25,7 +25,7 @@ var mar2013 = ee.Image("users/erkere/marathonClassified2013"),
     
       
   
-var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(marathonExport);
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(marExport);
 var naip05 = naip.filterDate('2005-01-01', '2005-12-31').median().byte();
 var naip08 = naip.filterDate('2008-01-01', '2008-12-31').median().byte();
 var naip10 = naip.filterDate('2010-01-01', '2010-12-31').median().byte();
@@ -107,7 +107,7 @@ Export.image.toDrive({
   image: mar2013to2017,
   description: 'mar2013to2017',
   scale: 1,
-        region: mar2013to2017Export,
+        region: marExport,
   maxPixels: 12000000000,
   crs: 'EPSG:26916'
 });
@@ -116,7 +116,7 @@ Export.image.toDrive({
   image: mar2013to2017_9x9,
   description: 'mar2013to2017_9x9',
   scale: 1,
-        region: mar2013to2017Export,
+        region: marExport,
   maxPixels: 12000000000,
   crs: 'EPSG:26916'
 });
@@ -125,7 +125,7 @@ Export.image.toDrive({
   image: mar2013to2017_25x25,
   description: 'mar2013to2017_25x25',
   scale: 1,
-        region: mar2013to2017Export,
+        region: marExport,
   maxPixels: 12000000000,
   crs: 'EPSG:26916'
 });
@@ -134,7 +134,7 @@ Export.image.toDrive({
   image: mar2013to2017_50x50,
   description: 'mar2013to2017_50x50',
   scale: 1,
-        region: mar2013to2017Export,
+        region: marExport,
   maxPixels: 12000000000,
   crs: 'EPSG:26916'
 });
