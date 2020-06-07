@@ -155,18 +155,78 @@ Map.addLayer(mke2010to2017_50x50, {min: -1, max: 1, palette: ['#e80c1e', '#fffff
 
 // Export:  Make sure I clip out the bad parts from lack of lidar.
 
-// mke2010 to 2017 make
 
-mke2010to2017
-mke2013to2017
-mke2010to2017_9x9
-mke2013to2017_9x9
-mke2010to2017_25x25
-mke2013to2017_25x25
-mke2010to2017_50x50
-mke2013to2017_50x50
+//                                                mke 2010 to 2017 
+Export.image.toDrive({
+  image: mke2010to2017,
+  description: 'mke2010to2017',
+  scale: 1,
+        region: mke2010to2017Export,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
+
+Export.image.toDrive({
+  image: mke2010to2017_9x9,
+  description: 'mke2010to2017_9x9',
+  scale: 1,
+        region: mke2010to2017Export,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
+
+Export.image.toDrive({
+  image: mke2010to2017_25x25,
+  description: 'mke2010to2017_25x25',
+  scale: 1,
+        region: mke2010to2017Export,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
+
+Export.image.toDrive({
+  image: mke2010to2017_50x50,
+  description: 'mke2010to2017_50x50',
+  scale: 1,
+        region: mke2010to2017Export,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
 
 
+//                                                 mke 2013 to 2017 
+Export.image.toDrive({
+  image: mke2013to2017,
+  description: 'mke2013to2017',
+  scale: 1,
+        region: mke2013to2017Export,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
 
+Export.image.toDrive({
+  image: mke2013to2017_9x9,
+  description: 'mke2013to2017_9x9',
+  scale: 1,
+        region: mke2013to2017Export,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
 
+Export.image.toDrive({
+  image: mke2013to2017_25x25,
+  description: 'mke2013to2017_25x25',
+  scale: 1,
+        region: mke2013to2017Export,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
 
+Export.image.toDrive({
+  image: mke2013to2017_50x50,
+  description: 'mke2013to2017_50x50',
+  scale: 1,
+        region: mke2013to2017Export,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
