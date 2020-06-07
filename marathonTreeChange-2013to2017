@@ -19,8 +19,8 @@ var marExport =
            [-90.30988448517358, 45.18724065341271],
            [-90.30988448517358, 45.19014423377814]]]], null, false);
 
- 
-var mar2013 = ee.Image("users/erkere/marathonClassified2013"),
+////////////////////////  CHANGE FROM OLD
+var mar2013 = ee.Image("users/erkere/marathonClassified2013-old"),
     mar2017 = ee.Image("users/erkere/marathonClassified2017");
     
       
