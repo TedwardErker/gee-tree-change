@@ -2686,15 +2686,15 @@ var grass = /* color: #fcff29 */ee.Feature(
             {
               "type": "Point",
               "coordinates": [
-                -87.90070917381999,
-                42.97089116912432
+                -87.90070917381998,
+                42.97086761824881
               ]
             },
             {
               "type": "Point",
               "coordinates": [
-                -87.89992596878764,
-                42.970734163117086
+                -87.89989646448846,
+                42.97074986373584
               ]
             },
             {
@@ -2849,6 +2849,202 @@ var grass = /* color: #fcff29 */ee.Feature(
               "coordinates": [
                 -87.97654774958505,
                 42.97068240472851
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90050687618789,
+                42.970869771876046
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90046932526168,
+                42.97085014614023
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90047468967971,
+                42.9708030443487
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90050687618789,
+                42.970785381167595
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90053638048705,
+                42.970785381167595
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90054979153213,
+                42.970752017367204
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90055515595016,
+                42.97072454128271
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90056052036819,
+                42.97071080323586
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90056856699523,
+                42.97068725229126
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90060075350341,
+                42.97068332713295
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90057929583129,
+                42.970677439395004
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90653916426238,
+                42.97082267009955
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90651770659026,
+                42.9707991191978
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90649624891815,
+                42.97077556828702
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90647479124603,
+                42.9707441670586
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90646406240997,
+                42.97072061612677
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90645333357391,
+                42.97068921487031
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90643187590179,
+                42.970665663917444
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90642114706573,
+                42.97064996327719
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90347886043708,
+                42.97096215807399
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90345740276496,
+                42.97093468208336
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90343326288382,
+                42.97090720608045
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.9034118052117,
+                42.97087973006528
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90339571195761,
+                42.97085421661164
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.9033581610314,
+                42.970814965123814
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90331256347815,
+                42.970789451643284
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90326428371588,
+                42.97073449949546
+              ]
+            },
+            {
+              "type": "Point",
+              "coordinates": [
+                -87.90321868616263,
+                42.97067954729854
               ]
             }
           ],
@@ -10481,7 +10677,7 @@ var nir10glcm14 = naip10.select(['N']).glcmTexture({size: 14, average: false});
 var contrast14 = nir10glcm14.select('N_contrast_-1_-1', 'N_contrast_0_-1', 'N_contrast_1_-1', 'N_contrast_-1_0');
 
 // var image = ee.Image.cat([naip05, naip08, naip10, ndvi10, naip10Gauss53, entro10, entro5, contrast7, contrast14, wl, wb, height, heightGauss104]);
-var image = ee.Image.cat([naip08, naip10, entro5, contrast7, wl, wb, heightGauss53]);
+var image = ee.Image.cat([naip08, naip10, entro5, contrast3, contrast7, wl, wb, height, heightGauss53]);
 //var image = ee.Image.cat([naip10, contrast3, height, heightGauss104, wb, wl]);
 
 // // var training = image.sampleRegions({
@@ -10541,7 +10737,7 @@ print('validation overall accuracy: ', valAccuracy.accuracy());
 var classified = image.classify(trainedClassifier);
 
 
-
+Map.addLayer(height);
 Map.addLayer(naip05);
 Map.addLayer(naip08);
 Map.addLayer(naip10);
