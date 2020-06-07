@@ -38,7 +38,7 @@ var milwaukeeExport = ee.Geometry.Polygon(
 
 var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
     mke2013 = ee.Image("users/erkere/milwaukeeClassified2013"),
-    mke2017 = ee.Image("users/erkere/milwaukeeClassified2017-old");
+    mke2017 = ee.Image("users/erkere/milwaukeeClassified2017-lessold");
     
       
   
@@ -156,6 +156,17 @@ Map.addLayer(mke2010to2017_50x50, {min: -1, max: 1, palette: ['#e80c1e', '#fffff
 // Export:  Make sure I clip out the bad parts from lack of lidar.
 
 // mke2010 to 2017 make
+
+mke2010to2017
+mke2013to2017
+mke2010to2017_9x9
+mke2013to2017_9x9
+mke2010to2017_25x25
+mke2013to2017_25x25
+mke2010to2017_50x50
+mke2013to2017_50x50
+
+
 
 
 
