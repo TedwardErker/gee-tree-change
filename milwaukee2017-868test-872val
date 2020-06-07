@@ -702,12 +702,12 @@ print('testing error matrix: ', testAccuracy);
 print('testing overall accuracy: ', testAccuracy.accuracy());
 
 
-// var valpts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_validation').filter(ee.Filter.neq(classProperty, '')).remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
-// var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
-// var valClassified = validation.classify(trainedClassifier);
-// var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
-// print('validation error matrix: ', valAccuracy);
-// print('validation overall accuracy: ', valAccuracy.accuracy());
+var valpts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_validation').filter(ee.Filter.neq(classProperty, '')).remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
+var valClassified = validation.classify(trainedClassifier);
+var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
+print('validation error matrix: ', valAccuracy);
+print('validation overall accuracy: ', valAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
