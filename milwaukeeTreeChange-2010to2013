@@ -1,4 +1,4 @@
-var mke2010to2017Export = 
+var mke2010to2013Export = 
     /* color: #d63000 */
     /* shown: false */
     ee.Geometry.Polygon(
@@ -11,31 +11,12 @@ var mke2010to2017Export =
           [-87.89302600619475, 43.192991991049524],
           [-88.06448369672414, 43.19299744228331],
           [-88.07033605438447, 42.84297814890826],
-          [-87.82621721317099, 42.84154646447634]]]),
-    mke2013to2017export = 
-    /* color: #98ff00 */
-    /* shown: false */
-    ee.Geometry.Polygon(
-        [[[-87.83512246643296, 42.8806723951344],
-          [-87.83273107074838, 42.914525893754266],
-          [-87.83635666288416, 42.96044853872301],
-          [-87.84926040755141, 42.99882838506003],
-          [-87.87139638428616, 43.02004554181754],
-          [-87.86023233403641, 43.043764537032814],
-          [-87.85576165126339, 43.085671375936755],
-          [-87.88874456977081, 43.128509003983936],
-          [-87.87555130789292, 43.16969954519678],
-          [-87.88212818068595, 43.194469434482414],
-          [-88.06991719282162, 43.19281690210452],
-          [-88.06879858330258, 43.05340499686345],
-          [-88.07356218884277, 43.05343635586756],
-          [-88.07142142256919, 42.842510337446974],
-          [-87.82515864456721, 42.84279346662611]]]);
-          
+          [-87.82621721317099, 42.84154646447634]]]);
+
+Map.addLayer(mke2010to2013Export);
           
 var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
-    mke2013 = ee.Image("users/erkere/milwaukeeClassified2013"),
-    mke2017 = ee.Image("users/erkere/milwaukeeClassified2017-lessold");
+    mke2013 = ee.Image("users/erkere/milwaukeeClassified2013");
     
       
   
@@ -44,16 +25,12 @@ var naip05 = naip.filterDate('2005-01-01', '2005-12-31').median().byte();
 var naip08 = naip.filterDate('2008-01-01', '2008-12-31').median().byte();
 var naip10 = naip.filterDate('2010-01-01', '2010-12-31').median().byte();
 var naip13 = naip.filterDate('2013-01-01', '2013-12-31').median().byte();
-var naip15 = naip.filterDate('2015-01-01', '2015-12-31').median().byte();
-var naip17 = naip.filterDate('2017-01-01', '2017-12-31').median().byte();
-var naip18 = naip.filterDate('2018-01-01', '2018-12-31').median().byte();
 
 
     
 // convert to tree
 var mke2010tree = mke2010.eq(3).select(['classification'], ['tree2010']);
 var mke2013tree = mke2013.eq(3).select(['classification'], ['tree2013']);
-var mke2017tree = mke2017.eq(3).select(['classification'], ['tree2017']);
 
 
 
@@ -62,28 +39,17 @@ var mke2017tree = mke2017.eq(3).select(['classification'], ['tree2017']);
 //
 
 
-//                       2013 to 2017
-var treeConstant = mke2013tree.eq(1).and(mke2017tree.eq(1)).select(['tree2013'], ['treeChangeCode']).expression("b('treeChangeCode') * 4");
-print(treeConstant);
-var treeGain = mke2013tree.eq(0).and(mke2017tree.eq(1)).select(['tree2013'], ['treeChangeCode']).expression("b('treeChangeCode') * 3");
-var treeLoss = mke2013tree.eq(1).and(mke2017tree.eq(0)).select(['tree2013'], ['treeChangeCode']).expression("b('treeChangeCode') * 2");
-var noTreeConstant = mke2013tree.eq(0).and(mke2017tree.eq(0)).select(['tree2013'], ['treeChangeCode']);
-var mke2013to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
-
-//                       2010 to 2017
-var treeConstant = mke2010tree.eq(1).and(mke2017tree.eq(1)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 4");
-print(treeConstant);
-var treeGain = mke2010tree.eq(0).and(mke2017tree.eq(1)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 3");
-var treeLoss = mke2010tree.eq(1).and(mke2017tree.eq(0)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 2");
-var noTreeConstant = mke2010tree.eq(0).and(mke2017tree.eq(0)).select(['tree2010'], ['treeChangeCode']);
-var mke2010to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
+//                       2010 to 2013
+var treeConstant = mke2010tree.eq(1).and(mke2013tree.eq(1)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 4");
+var treeGain = mke2010tree.eq(0).and(mke2013tree.eq(1)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 3");
+var treeLoss = mke2010tree.eq(1).and(mke2013tree.eq(0)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 2");
+var noTreeConstant = mke2010tree.eq(0).and(mke2013tree.eq(0)).select(['tree2010'], ['treeChangeCode']);
+var mke2010to2013 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
 
 
 Map.addLayer(naip10);
 Map.addLayer(naip13);
-Map.addLayer(naip17);
-Map.addLayer(mke2010to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
-Map.addLayer(mke2013to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
+Map.addLayer(mke2010to2013, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
 
 
 
@@ -95,18 +61,11 @@ Map.addLayer(mke2013to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','
 var k9x9 = ee.Kernel.rectangle(4.5, 4.5, 'pixels', true);
 print(k9x9);
 
-//                       2013 to 2017
-var mke2013tree9x9 = mke2013tree.convolve(k9x9);
-var mke2017tree9x9 = mke2017tree.convolve(k9x9);
-var mke2013to2017_9x9 = mke2017tree9x9.subtract(mke2013tree9x9);
-Map.addLayer(mke2013to2017_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
-
-
-//                       2010 to 2017
+//                       2010 to 2013
 var mke2010tree9x9 = mke2010tree.convolve(k9x9);
-var mke2017tree9x9 = mke2017tree.convolve(k9x9);
-var mke2010to2017_9x9 = mke2017tree9x9.subtract(mke2010tree9x9);
-Map.addLayer(mke2010to2017_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+var mke2013tree9x9 = mke2013tree.convolve(k9x9);
+var mke2010to2013_9x9 = mke2013tree9x9.subtract(mke2010tree9x9);
+Map.addLayer(mke2010to2013_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
 
 //
 //               25x25 change
@@ -115,18 +74,11 @@ Map.addLayer(mke2010to2017_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff'
 var k25x25 = ee.Kernel.rectangle(12.5, 12.5, 'pixels', true);
 print(k25x25);
 
-//                       2013 to 2017
-var mke2013tree25x25 = mke2013tree.convolve(k25x25);
-var mke2017tree25x25 = mke2017tree.convolve(k25x25);
-var mke2013to2017_25x25 = mke2017tree25x25.subtract(mke2013tree25x25);
-Map.addLayer(mke2013to2017_25x25, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
-
-
-//                       2010 to 2017
+//                       2010 to 2013
 var mke2010tree25x25 = mke2010tree.convolve(k25x25);
-var mke2017tree25x25 = mke2017tree.convolve(k25x25);
-var mke2010to2017_25x25 = mke2017tree25x25.subtract(mke2010tree25x25);
-Map.addLayer(mke2010to2017_25x25, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+var mke2013tree25x25 = mke2013tree.convolve(k25x25);
+var mke2010to2013_25x25 = mke2013tree25x25.subtract(mke2010tree25x25);
+Map.addLayer(mke2010to2013_25x25, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
 
 
 //
@@ -136,94 +88,49 @@ Map.addLayer(mke2010to2017_25x25, {min: -1, max: 1, palette: ['#e80c1e', '#fffff
 var k50x50 = ee.Kernel.rectangle(25, 25, 'pixels', true);
 print(k50x50);
 
-//                       2013 to 2017
-var mke2013tree50x50 = mke2013tree.convolve(k50x50);
-var mke2017tree50x50 = mke2017tree.convolve(k50x50);
-var mke2013to2017_50x50 = mke2017tree50x50.subtract(mke2013tree50x50);
-Map.addLayer(mke2013to2017_50x50, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
-
-
-//                       2010 to 2017
+//                       2010 to 2013
 var mke2010tree50x50 = mke2010tree.convolve(k50x50);
-var mke2017tree50x50 = mke2017tree.convolve(k50x50);
-var mke2010to2017_50x50 = mke2017tree50x50.subtract(mke2010tree50x50);
-Map.addLayer(mke2010to2017_50x50, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+var mke2013tree50x50 = mke2013tree.convolve(k50x50);
+var mke2010to2013_50x50 = mke2013tree50x50.subtract(mke2010tree50x50);
+Map.addLayer(mke2010to2013_50x50, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
 
 
-// Export:  Make sure I clip out the bad parts from lack of lidar.
-
-
-//                                                mke 2010 to 2017 
+//                                                mke 2010 to 2013 
 Export.image.toDrive({
-  image: mke2010to2017,
-  description: 'mke2010to2017',
+  image: mke2010to2013,
+  description: 'mke2010to2013',
   scale: 1,
-        region: mke2010to2017Export,
+        region: mke2010to2013Export,
   maxPixels: 12000000000,
   crs: 'EPSG:26916'
 });
 
 Export.image.toDrive({
-  image: mke2010to2017_9x9,
-  description: 'mke2010to2017_9x9',
+  image: mke2010to2013_9x9,
+  description: 'mke2010to2013_9x9',
   scale: 1,
-        region: mke2010to2017Export,
+        region: mke2010to2013Export,
   maxPixels: 12000000000,
   crs: 'EPSG:26916'
 });
 
 Export.image.toDrive({
-  image: mke2010to2017_25x25,
-  description: 'mke2010to2017_25x25',
+  image: mke2010to2013_25x25,
+  description: 'mke2010to2013_25x25',
   scale: 1,
-        region: mke2010to2017Export,
+        region: mke2010to2013Export,
   maxPixels: 12000000000,
   crs: 'EPSG:26916'
 });
 
 Export.image.toDrive({
-  image: mke2010to2017_50x50,
-  description: 'mke2010to2017_50x50',
+  image: mke2010to2013_50x50,
+  description: 'mke2010to2013_50x50',
   scale: 1,
-        region: mke2010to2017Export,
+        region: mke2010to2013Export,
   maxPixels: 12000000000,
   crs: 'EPSG:26916'
 });
 
 
-//                                                 mke 2013 to 2017 
-Export.image.toDrive({
-  image: mke2013to2017,
-  description: 'mke2013to2017',
-  scale: 1,
-        region: mke2013to2017Export,
-  maxPixels: 12000000000,
-  crs: 'EPSG:26916'
-});
 
-Export.image.toDrive({
-  image: mke2013to2017_9x9,
-  description: 'mke2013to2017_9x9',
-  scale: 1,
-        region: mke2013to2017Export,
-  maxPixels: 12000000000,
-  crs: 'EPSG:26916'
-});
-
-Export.image.toDrive({
-  image: mke2013to2017_25x25,
-  description: 'mke2013to2017_25x25',
-  scale: 1,
-        region: mke2013to2017Export,
-  maxPixels: 12000000000,
-  crs: 'EPSG:26916'
-});
-
-Export.image.toDrive({
-  image: mke2013to2017_50x50,
-  description: 'mke2013to2017_50x50',
-  scale: 1,
-        region: mke2013to2017Export,
-  maxPixels: 12000000000,
-  crs: 'EPSG:26916'
-});
