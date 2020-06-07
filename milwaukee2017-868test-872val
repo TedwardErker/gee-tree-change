@@ -164,7 +164,20 @@ var grass = /* color: #dee61c */ee.Feature(
              [-88.0090097228816, 43.11881620193821],
              [-88.00897619526891, 43.118913115232196],
              [-88.00890914004354, 43.11901883865057],
-             [-88.00894803207426, 43.119184275855325]]),
+             [-88.00894803207426, 43.119184275855325],
+             [-88.0183511841939, 42.868237946860624],
+             [-88.0193060506032, 42.86834017071709],
+             [-88.01886616832476, 42.866948339055426],
+             [-88.02837191707354, 42.86736510550001],
+             [-88.014585362737, 42.86912650241475],
+             [-88.01396309024554, 42.86910291260957],
+             [-88.01384178837364, 42.869122235868076],
+             [-88.01446942528312, 42.86911044096581],
+             [-88.0148422523362, 42.86913796240094],
+             [-88.01934492567263, 42.8683445846748],
+             [-88.01922556737146, 42.868336721307784],
+             [-88.0189989207097, 42.86835146512009],
+             [-88.01889586957411, 42.86694118916196]]),
         {
           "class_2017": 0,
           "system:index": "0"
@@ -662,12 +675,12 @@ print('testing error matrix: ', testAccuracy);
 print('testing overall accuracy: ', testAccuracy.accuracy());
 
 
-var valpts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_validation').filter(ee.Filter.neq(classProperty, '')).remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
-var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
-var valClassified = validation.classify(trainedClassifier);
-var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
-print('validation error matrix: ', valAccuracy);
-print('validation overall accuracy: ', valAccuracy.accuracy());
+// var valpts = ee.FeatureCollection('users/erker/milwaukee/milwaukee_shapefiles/milwaukee_accuracy_validation').filter(ee.Filter.neq(classProperty, '')).remap(['G','I','S','T','W'], [0,1,2,3,4], classProperty);
+// var validation = image.sampleRegions({collection: valpts, properties: [classProperty], scale: 1});
+// var valClassified = validation.classify(trainedClassifier);
+// var valAccuracy = valClassified.errorMatrix(classProperty, 'classification');
+// print('validation error matrix: ', valAccuracy);
+// print('validation overall accuracy: ', valAccuracy.accuracy());
 
 
 var classified = image.classify(trainedClassifier);
