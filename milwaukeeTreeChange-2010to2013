@@ -18,7 +18,8 @@ Map.addLayer(mke2010to2013Export);
 var mke2010 = ee.Image("users/erkere/milwaukeeClassified2010"),
     mke2013 = ee.Image("users/erkere/milwaukeeClassified2013");
     
-      
+Map.addLayer(mke2010, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']});
+
   
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(mke2010to2013Export);
 var naip05 = naip.filterDate('2005-01-01', '2005-12-31').median().byte();
