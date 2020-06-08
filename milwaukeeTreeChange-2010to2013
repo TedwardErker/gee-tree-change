@@ -61,7 +61,6 @@ Map.addLayer(mke2010to2013, {min: 1, max: 4, palette: ['black', 'red', 'green','
 //
 
 var k9x9 = ee.Kernel.rectangle(4.5, 4.5, 'pixels', true);
-print(k9x9);
 
 //                       2010 to 2013
 var mke2010tree9x9 = mke2010tree.convolve(k9x9);
@@ -74,7 +73,6 @@ Map.addLayer(mke2010to2013_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff'
 // 
 
 var k25x25 = ee.Kernel.rectangle(12.5, 12.5, 'pixels', true);
-print(k25x25);
 
 //                       2010 to 2013
 var mke2010tree25x25 = mke2010tree.convolve(k25x25);
@@ -88,7 +86,6 @@ Map.addLayer(mke2010to2013_25x25, {min: -1, max: 1, palette: ['#e80c1e', '#fffff
 // 
 
 var k50x50 = ee.Kernel.rectangle(25, 25, 'pixels', true);
-print(k50x50);
 
 //                       2010 to 2013
 var mke2010tree50x50 = mke2010tree.convolve(k50x50);
