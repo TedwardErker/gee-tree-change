@@ -20,11 +20,14 @@ var marExport =
            [-90.30988448517358, 45.19014423377814]]]], null, false);
 
 ////////////////////////  CHANGE FROM OLD
-var mar2013 = ee.Image("users/erkere/marathonClassified2013-old"),
+var mar2013 = ee.Image("users/erkere/marathonClassified2013"),
     mar2017 = ee.Image("users/erkere/marathonClassified2017");
-    
-      
   
+      
+Map.addLayer(mar2013, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']}, "mar2013");
+Map.addLayer(mar2017, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']}, "mar2017");
+
+
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(marExport);
 var naip05 = naip.filterDate('2005-01-01', '2005-12-31').median().byte();
 var naip08 = naip.filterDate('2008-01-01', '2008-12-31').median().byte();
@@ -68,7 +71,6 @@ Map.addLayer(mar2013to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','
 //
 
 var k9x9 = ee.Kernel.rectangle(4.5, 4.5, 'pixels', true);
-print(k9x9);
 
 var mar2013tree9x9 = mar2013tree.convolve(k9x9);
 var mar2017tree9x9 = mar2017tree.convolve(k9x9);
@@ -81,7 +83,6 @@ Map.addLayer(mar2013to2017_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff'
 // 
 
 var k25x25 = ee.Kernel.rectangle(12.5, 12.5, 'pixels', true);
-print(k25x25);
 
 var mar2013tree25x25 = mar2013tree.convolve(k25x25);
 var mar2017tree25x25 = mar2017tree.convolve(k25x25);
@@ -94,7 +95,6 @@ Map.addLayer(mar2013to2017_25x25, {min: -1, max: 1, palette: ['#e80c1e', '#fffff
 // 
 
 var k50x50 = ee.Kernel.rectangle(25, 25, 'pixels', true);
-print(k50x50);
 
 var mar2013tree50x50 = mar2013tree.convolve(k50x50);
 var mar2017tree50x50 = mar2017tree.convolve(k50x50);
