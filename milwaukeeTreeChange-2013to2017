@@ -22,7 +22,9 @@ var mke2013to2017Export =
 var mke2013 = ee.Image("users/erkere/milwaukeeClassified2013"),
     mke2017 = ee.Image("users/erkere/milwaukeeClassified2017-lessold");
     
-      
+          
+Map.addLayer(mke2013, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']}, "mke2013");
+Map.addLayer(mke2017, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']}, "mke2017");
   
 var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(mke2013to2017Export);
 var naip05 = naip.filterDate('2005-01-01', '2005-12-31').median().byte();
