@@ -1,0 +1,140 @@
+var marExport = 
+    /* color: #ff0000 */
+    /* shown: false */
+    ee.Geometry.MultiPolygon(
+        [[[[-89.76606124298608, 45.129137941352475],
+           [-89.76606124298608, 45.12429337431917],
+           [-89.76056807892358, 45.12429337431917],
+           [-89.76056807892358, 45.129137941352475]]],
+         [[[-89.71524947540796, 45.126231250505505],
+           [-89.71524947540796, 45.12332441153951],
+           [-89.70838302032983, 45.12332441153951],
+           [-89.70838302032983, 45.126231250505505]]],
+         [[[-90.43485396759546, 45.187240653412736],
+           [-90.43485396759546, 44.56638066010099],
+           [-89.11786788361108, 44.56638066010099],
+           [-89.11786788361108, 45.187240653412736]]],
+         [[[-90.34284346954858, 45.19014423377814],
+           [-90.34284346954858, 45.18724065341271],
+           [-90.30988448517358, 45.18724065341271],
+           [-90.30988448517358, 45.19014423377814]]]], null, false);
+
+////////////////////////  CHANGE FROM OLD
+var mar2010 = ee.Image("users/erkere/marathonClassified2010"),
+    mar2017 = ee.Image("users/erkere/marathonClassified2017");
+  
+      
+Map.addLayer(mar2010, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']}, "mar2010");
+Map.addLayer(mar2017, {min: 0, max: 4, palette: ['yellow', 'red', 'brown','green','blue']}, "mar2017");
+
+
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(marExport);
+var naip05 = naip.filterDate('2005-01-01', '2005-12-31').median().byte();
+var naip08 = naip.filterDate('2008-01-01', '2008-12-31').median().byte();
+var naip10 = naip.filterDate('2010-01-01', '2010-12-31').median().byte();
+var naip13 = naip.filterDate('2010-01-01', '2010-12-31').median().byte();
+var naip15 = naip.filterDate('2015-01-01', '2015-12-31').median().byte();
+var naip17 = naip.filterDate('2017-01-01', '2017-12-31').median().byte();
+var naip18 = naip.filterDate('2018-01-01', '2018-12-31').median().byte();
+
+
+    
+// convert to tree
+var mar2010tree = mar2010.eq(3).select(['classification'], ['tree2010']);
+var mar2017tree = mar2017.eq(3).select(['classification'], ['tree2017']);
+
+
+
+//
+//      Pixel level change
+//
+
+
+var treeConstant = mar2010tree.eq(1).and(mar2017tree.eq(1)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 4");
+var treeGain = mar2010tree.eq(0).and(mar2017tree.eq(1)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 3");
+var treeLoss = mar2010tree.eq(1).and(mar2017tree.eq(0)).select(['tree2010'], ['treeChangeCode']).expression("b('treeChangeCode') * 2");
+var noTreeConstant = mar2010tree.eq(0).and(mar2017tree.eq(0)).select(['tree2010'], ['treeChangeCode']);
+var mar2010to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
+
+
+Map.addLayer(naip10, {}, "naip10");
+Map.addLayer(naip13, {}, "naip13");
+Map.addLayer(naip17, {}, "naip17");
+Map.addLayer(mar2010to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
+
+
+
+
+//
+//                9x9 change
+//
+
+var k9x9 = ee.Kernel.rectangle(4.5, 4.5, 'pixels', true);
+
+var mar2010tree9x9 = mar2010tree.convolve(k9x9);
+var mar2017tree9x9 = mar2017tree.convolve(k9x9);
+var mar2010to2017_9x9 = mar2017tree9x9.subtract(mar2010tree9x9);
+Map.addLayer(mar2010to2017_9x9, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+
+
+//
+//               25x25 change
+// 
+
+var k25x25 = ee.Kernel.rectangle(12.5, 12.5, 'pixels', true);
+
+var mar2010tree25x25 = mar2010tree.convolve(k25x25);
+var mar2017tree25x25 = mar2017tree.convolve(k25x25);
+var mar2010to2017_25x25 = mar2017tree25x25.subtract(mar2010tree25x25);
+Map.addLayer(mar2010to2017_25x25, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+
+
+//
+//               50x50 change
+// 
+
+var k50x50 = ee.Kernel.rectangle(25, 25, 'pixels', true);
+
+var mar2010tree50x50 = mar2010tree.convolve(k50x50);
+var mar2017tree50x50 = mar2017tree.convolve(k50x50);
+var mar2010to2017_50x50 = mar2017tree50x50.subtract(mar2010tree50x50);
+Map.addLayer(mar2010to2017_50x50, {min: -1, max: 1, palette: ['#e80c1e', '#ffffff','#04db33']});
+
+                     
+
+Export.image.toDrive({
+  image: mar2010to2017,
+  description: 'mar2010to2017',
+  scale: 1,
+        region: marExport,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
+
+Export.image.toDrive({
+  image: mar2010to2017_9x9,
+  description: 'mar2010to2017_9x9',
+  scale: 1,
+        region: marExport,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
+
+Export.image.toDrive({
+  image: mar2010to2017_25x25,
+  description: 'mar2010to2017_25x25',
+  scale: 1,
+        region: marExport,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
+
+Export.image.toDrive({
+  image: mar2010to2017_50x50,
+  description: 'mar2010to2017_50x50',
+  scale: 1,
+        region: marExport,
+  maxPixels: 12000000000,
+  crs: 'EPSG:26916'
+});
+
