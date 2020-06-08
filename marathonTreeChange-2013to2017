@@ -58,9 +58,9 @@ var noTreeConstant = mar2013tree.eq(0).and(mar2017tree.eq(0)).select(['tree2013'
 var mar2013to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
 
 
-Map.addLayer(naip10);
-Map.addLayer(naip13);
-Map.addLayer(naip17);
+Map.addLayer(naip10, {}, "naip10");
+Map.addLayer(naip13, {}, "naip13");
+Map.addLayer(naip17, {}, "naip17");
 Map.addLayer(mar2013to2017, {min: 1, max: 4, palette: ['black', 'red', 'green','white']});
 
 
