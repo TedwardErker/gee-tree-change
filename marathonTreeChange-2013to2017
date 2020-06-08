@@ -54,7 +54,7 @@ print(treeConstant);
 var treeGain = mar2013tree.eq(0).and(mar2017tree.eq(1)).select(['tree2013'], ['treeChangeCode']).expression("b('treeChangeCode') * 3");
 var treeLoss = mar2013tree.eq(1).and(mar2017tree.eq(0)).select(['tree2013'], ['treeChangeCode']).expression("b('treeChangeCode') * 2");
 var noTreeConstant = mar2013tree.eq(0).and(mar2017tree.eq(0)).select(['tree2013'], ['treeChangeCode']);
-var mar2013to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum();
+var mar2013to2017 = ee.ImageCollection([treeConstant, treeLoss, treeGain, noTreeConstant]).sum().byte();
 
 
 Map.addLayer(naip10, {}, "naip10");
